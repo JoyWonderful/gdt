@@ -5,21 +5,17 @@
  * @author JoyWonderful
  * @date 2026-06-06
  */
-#define __WINDOWS__ defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
-#define __LINUX__ defined(__unix) || defined(__unix__)
-#if __WINDOWS__
+#pragma once // 保证头文件只被编译一次
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
 #include <windows.h>
-#define sleep(ms) Sleep(ms) // 毫秒
-#endif
-#if __LINUX__
+#define sleep(ms) Sleep(ms) // 原单位：毫秒
+#elif defined(__unix) || defined(__unix__)
 #include <unistd.h>
-#define sleep(ms) usleep(ms * 1000) // 微秒
+#define sleep(ms) usleep(ms * 1000) // 现用单位：毫秒；原单位：微秒
 #endif
 #include <stdio.h>
-#include <stdlib.h> // _sleep
 #include <initializer_list> // 多参数
 #include <string>
-using namespace std;
 
 /////////////////
 // DEFINITIONS //
@@ -56,10 +52,10 @@ namespace rich {
 ///////////////
 // FUNCTIONS //
 ///////////////
-    #if __WINDOWS__
+    #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
     /**
-     * @brief 在 Windows 下启用虚拟终端序列
-     * @return `true` 代表成功，`false` 代表失败
+     * @brief 在 Windows 下启用虚拟终端序列。
+     * @return `true` 代表成功，`false` 代表失败。
      * 
      * @details
      * 输出模式设定 `ENABLE_VIRTUAL_TERMINAL_PROCESSING` `DISABLE_NEWLINE_AUTO_RETURN`；
@@ -70,6 +66,9 @@ namespace rich {
      * @see https://learn.microsoft.com/windows/console/classic-vs-vt
      */
     bool win_vt_setup() {
+        SetConsoleCP(CP_UTF8); // 65001
+        SetConsoleOutputCP(CP_UTF8);
+
         HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
         if (hOut == INVALID_HANDLE_VALUE)
         {
@@ -115,18 +114,15 @@ namespace rich {
             return false;
         }
 
-        SetConsoleCP(CP_UTF8); // 65001
-        SetConsoleOutputCP(CP_UTF8);
-
         return true;
     }
     #endif
 
     /**
-     * @brief 生成使文字为 RGB 颜色的 VT 序列
+     * @brief 生成使文字为 RGB 颜色的 VT 序列。
      * @param _color_str 颜色。格式可以为 `rgb({r},{g},{b})`（空格无所谓）；也可以为 `#FFFFFF` 的十六进制形式。
      * @param _is_bg 是否为背景色。若为 `true`，则控制背景色；否则为前景色。
-     * @return 为 `std::string` 类型的 VT 序列。可以作为 `richPrint` 的参数。
+     * @return 为 `std::string` 类型的 VT 序列。可以作为 `rich_print` 的参数。
      */
     std::string color_rgb(std::string _color_str, bool _is_bg)
     {
@@ -155,15 +151,35 @@ namespace rich {
         return ret; 
     }
 
+    void cursor_reset() {printf("\033[H");}
+    void cursor_up(unsigned int n) {printf("\033[%dA",n);}
+    void cursor_up_with_goto_start(unsigned int n) {printf("\033[%dF",n);}
+    void cursor_down(unsigned int n) {printf("\033[%dB",n);}
+    void cursor_down_with_goto_start(unsigned int n) {printf("\033[%dE",n);}
+    void cursor_right(unsigned int n) {printf("\033[%dC",n);}
+    void cursor_left(unsigned int n) {printf("\033[%dD",n);}
+    void cursor_save() {printf("\033[s");}
+    void cursor_load() {printf("\033[u");}
+
+    void screen_clear()
+    {
+        printf("\e[H\e[2J\e[H"); // 将光标移回行首并清零
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+        system("cls");
+#elif defined(__unix) || defined(__unix__)
+        system("clear");
+#endif
+    }
+
     /**
-     * @brief 带样式的文本输出
-     * @param _str 要输出的字符串
-     * @param _styles 带有的样式
-     * @return 无
+     * @brief 带样式的文本输出。
+     * @param _str 要输出的字符串。
+     * @param _styles 带有的样式。
+     * @return 无。
      * 
-     * @note 用大括号 `{}` 包裹样式列表。如 `richPrint("Ca+H", {STYL_BOLD, COLOR_FG_RED})`
+     * @note 用大括号 `{}` 包裹样式列表。如 `rich_print("Ca+H", {STYL_BOLD, COLOR_FG_RED})`。
      */
-    void richPrint(std::string _str, std::initializer_list<std::string> _styles)
+    void rich_print(std::string _str, std::initializer_list<std::string> _styles)
     {
         for(auto i: _styles) // 可变参数
         {
@@ -171,6 +187,20 @@ namespace rich {
         }
         printf("%s", _str.c_str());
         printf(STYL_CLEARALL); // 清除所有样式
+    }
+    /**
+     * @brief 模拟打字输出。
+     * @param _str 要输出的字符串。
+     * @param _delay 时间间隔，单位为毫秒(ms)；默认 `120`。
+     */
+    void typing(std::string _str, unsigned int _delay = 120U)
+    {
+        for(int i = 0; i < _str.length(); i++)
+        {
+            printf("%c", _str[i]);
+            fflush(stdout);
+            sleep(_delay);
+        }
     }
 
     /**
@@ -193,12 +223,12 @@ namespace rich {
         {
             char name[100];
             sprintf(name, "%13s", STYLE_LST_NAME[i-1].c_str());
-            richPrint(name, {STYLE_LST_VALUE[i-1]});
+            rich_print(name, {STYLE_LST_VALUE[i-1]});
             if(i % 3 == 0) printf("\n");
         }
-        richPrint("rgb(233, 50, 69)", {color_rgb("rgb(233, 50, 69)", true)});
-        richPrint("rgb(126, 228, 37)", {color_rgb("rgb(126,228,37)", true)});
-        richPrint("#bb00ff", {color_rgb("#bb00ff", true), STYL_BOLD, COLOR_FG_BLACK});
+        rich_print("rgb(233, 50, 69)", {color_rgb("rgb(233, 50, 69)", true)});
+        rich_print("rgb(126, 228, 37)", {color_rgb("rgb(126,228,37)", true)});
+        rich_print("#bb00ff", {color_rgb("#bb00ff", true), STYL_BOLD, COLOR_FG_BLACK});
         printf("\nWaiting for 1000ms...\n");
         sleep(1000);
         printf("test done.\n");
