@@ -6,16 +6,25 @@
  * @date 2026-06-06
  */
 #define __WINDOWS__ defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+#define __LINUX__ defined(__unix) || defined(__unix__)
 #if __WINDOWS__
 #include <windows.h>
+#define sleep(ms) Sleep(ms) // 毫秒
+#endif
+#if __LINUX__
+#include <unistd.h>
+#define sleep(ms) usleep(ms * 1000) // 微秒
 #endif
 #include <stdio.h>
-#include <initializer_list>
+#include <stdlib.h> // _sleep
+#include <initializer_list> // 多参数
 #include <string>
+using namespace std;
 
 /////////////////
 // DEFINITIONS //
 /////////////////
+// https://www.cnblogs.com/chargedcreeper/p/-/ANSI
 #define COLOR_FG_BLACK   "\033[30m" /// 前景-黑色
 #define COLOR_FG_RED     "\033[31m" /// 前景-红色
 #define COLOR_FG_GREEN   "\033[32m" /// 前景-绿色
@@ -57,7 +66,8 @@ namespace rich {
      * 输入模式设定 `ENABLE_VIRTUAL_TERMINAL_PROCESSING`；
      * 还设置代码页为 `65001`(`CP_UTF8`)。
      * 
-     * @see https://learn.microsoft.com/zh-cn/windows/console/console-virtual-terminal-sequences#example-of-enabling-virtual-terminal-processing
+     * @see https://learn.microsoft.com/windows/console/console-virtual-terminal-sequences#example-of-enabling-virtual-terminal-processing
+     * @see https://learn.microsoft.com/windows/console/classic-vs-vt
      */
     bool win_vt_setup() {
         HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -113,12 +123,45 @@ namespace rich {
     #endif
 
     /**
+     * @brief 生成使文字为 RGB 颜色的 VT 序列
+     * @param _color_str 颜色。格式可以为 `rgb({r},{g},{b})`（空格无所谓）；也可以为 `#FFFFFF` 的十六进制形式。
+     * @param _is_bg 是否为背景色。若为 `true`，则控制背景色；否则为前景色。
+     * @return 为 `std::string` 类型的 VT 序列。可以作为 `richPrint` 的参数。
+     */
+    std::string color_rgb(std::string _color_str, bool _is_bg)
+    {
+        unsigned int r = 0, g = 0, b = 0;
+        if(_color_str[0] == '#')
+        {
+            _color_str.erase(0, 1);
+            sscanf(_color_str.c_str(), "%2x%2x%2x", &r, &g, &b);
+            //printf("if:%s\n", _color_str.c_str()); //@@test
+        }
+        else if(_color_str[0] == 'r')
+        {
+            int pos;
+            while(pos = _color_str.find(' '), pos != std::string::npos) _color_str.erase(pos, 1);// 去除所有空格以格式化输入
+            _color_str.erase(0, 4); _color_str.pop_back(); // 去掉 `rgb` 和括号
+            sscanf(_color_str.c_str(), "%d,%d,%d", &r, &g, &b);
+            // printf("else:%s\n", _color_str.c_str()); //@@test
+        }
+        char cret[100];
+        //@@test
+        // sprintf(cret, "[%d;2;%d;%d;%dm", (_is_bg?48:38), r, g, b);
+        // printf("%s\n", cret);
+        //@!
+        sprintf(cret, "\033[%d;2;%d;%d;%dm", (_is_bg?48:38), r, g, b);
+        std::string ret = cret;
+        return ret; 
+    }
+
+    /**
      * @brief 带样式的文本输出
      * @param _str 要输出的字符串
      * @param _styles 带有的样式
      * @return 无
      * 
-     * @note 用大括号 `{}` 包裹样式
+     * @note 用大括号 `{}` 包裹样式列表。如 `richPrint("Ca+H", {STYL_BOLD, COLOR_FG_RED})`
      */
     void richPrint(std::string _str, std::initializer_list<std::string> _styles)
     {
@@ -129,8 +172,9 @@ namespace rich {
         printf("%s", _str.c_str());
         printf(STYL_CLEARALL); // 清除所有样式
     }
+
     /**
-     * @brief 测试样式
+     * @brief 测试
      * @return 无
      */
     void test()
@@ -152,6 +196,11 @@ namespace rich {
             richPrint(name, {STYLE_LST_VALUE[i-1]});
             if(i % 3 == 0) printf("\n");
         }
-        printf("\n");
+        richPrint("rgb(233, 50, 69)", {color_rgb("rgb(233, 50, 69)", true)});
+        richPrint("rgb(126, 228, 37)", {color_rgb("rgb(126,228,37)", true)});
+        richPrint("#bb00ff", {color_rgb("#bb00ff", true), STYL_BOLD, COLOR_FG_BLACK});
+        printf("\nWaiting for 1000ms...\n");
+        sleep(1000);
+        printf("test done.\n");
     }
 }
