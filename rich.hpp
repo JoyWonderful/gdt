@@ -152,6 +152,10 @@ namespace rich {
     }
 
     void cursor_reset() {printf("\033[H");}
+    /**
+     * @note 行、列从 0 开始
+     */
+    void cursor_mv(unsigned int line, unsigned int col) {printf("\033[%d;%dH", line, col);}
     void cursor_up(unsigned int n) {printf("\033[%dA",n);}
     void cursor_up_with_goto_start(unsigned int n) {printf("\033[%dF",n);}
     void cursor_down(unsigned int n) {printf("\033[%dB",n);}
