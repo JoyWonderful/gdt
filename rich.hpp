@@ -195,9 +195,10 @@ namespace rich {
     /**
      * @brief 模拟打字输出。
      * @param _str 要输出的字符串。
-     * @param _delay 时间间隔，单位为毫秒(ms)；默认 `120`。
+     * @param _delay *可选* 时间间隔，单位为毫秒(ms)；默认 `120`。
+     * @param _style *可选* 应用的样式；默认 `{}`。
      */
-    void typing(std::string _str, unsigned int _delay = 120U)
+    void typing(std::string _str, unsigned int _delay = 120U, std::initializer_list<std::string> _styles = {})
     {
         for(int i = 0; i < _str.length(); i++)
         {
