@@ -1,5 +1,10 @@
 /**
  * @file louis.cpp
+ * @attention
+ * This file MUST BE OPENED (ALSO SAVED) IN `UTF-8`, or it won't work/show correctly. \n
+ * In windows, run `chcp 65001` first before compiling. \n
+ * Add `-fexec-charset=UTF-8` argrument when compiling it. \n
+ * Add `-static-libgcc`, `-static-libstdc++` to avoid library missing.
  * 
  * @author JoyWonderful
  * @date 2026-06-06
@@ -65,7 +70,7 @@ int main() {
             printf("%s", COLOR_FG_RED);
             for(int i = 0; i < (int)1e4; i++)
             {
-                printf("?");
+                printf("????????????????????????????????????");
             }
             printf("%s", STYL_CLEARALL);
             sleep(3000);
@@ -74,13 +79,13 @@ int main() {
             rich::cursor_mv(3, 10);
             rich::typing("You're cheating, right?\n");
             rich::cursor_mv(4, 10);
-            rich::typing("The cheater will be punished.\n", 200);
+            rich::typing("The cheater will be \n", 200);
             sleep((unsigned int)998.244353);
             rich::screen_clear();
             rich::rich_print("FATAL: ", {COLOR_FG_WHITE, COLOR_BG_RED, STYL_BOLD});
-            printf("Could not read the data, because cheating detected.\n");
-            printf("Program will be closed in 3s...\n");
-            sleep(3000);
+            printf("Could not read the data, because %s????????????%s.\n", COLOR_FG_BLUE, STYL_CLEARALL);
+            printf("Program will be closed in 5s...\n");
+            sleep(5000);
             rich::screen_clear();
             return 0; // 让作弊者重开吧
         }
