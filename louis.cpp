@@ -10,7 +10,6 @@
  * @date 2026-06-06
  */
 #include "rich.hpp"
-#include <iostream>
 
 int main() {
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
@@ -29,11 +28,7 @@ int main() {
     rich::rich_print("********SAFETY QUESTIONS********\n", {COLOR_BG_WHITE, COLOR_FG_BLACK, STYL_BOLD});
     while(true)
     {
-        rich::cursor_save();
-        rich::rich_print("Who are you?(in English, without space)", {rich::color_rgb("#555555", false), STYL_DIM, STYL_ITALIC});
-        rich::cursor_load(); // 形成 Placeholder 效果
-        std::string name;
-        std::cin >> name;
+        std::string name = rich::rich_input("Who are you?(in English, without space)");
         if(name.compare("Louis")==0 || name.compare("louis")==0 || name.compare("ShiQianyu")==0 || name.compare("shiqianyu")==0) // 论如何科学地建一座屎山
         {
             break;
@@ -41,7 +36,7 @@ int main() {
         else if(name.compare("Alan")==0 || name.compare("alan")==0 || name.compare("WangZeen")==0 || name.compare("WangZeen")==0) // 论如何科学地再建一座
         {// FAKE GREETING
             rich::screen_clear();
-            rich::typing(R"(
+            rich::rich_print(R"(
                                                   
                                                   
  ''';'''                      ,            ;      
@@ -49,7 +44,7 @@ int main() {
     ;     ,,,,;  ;    '  ;   ;   ;,,,,;    ;      
     ;    ;    ;  ;        ;''    ;         ;   ,, 
     ;    ',,,';  ;       ,'''',  ',,,,'    ',, '' 
-                         ',,,,'                   )", 1);
+                         ',,,,'                   )", {}, 1);
             std::string ascii1[5] = {
                 " ▄▄▄▄▄▄▄▄▄▄▄▄▄    ▄  ▄▄▄▄▄▄▄▄     ▄▄▄▄▄▄▄▄▄▄▄   ",
                 "       █           █  ▀▄   ▄▀     █    █    █   ",
@@ -60,13 +55,14 @@ int main() {
             rich::cursor_up(7); rich::cursor_save();
             for(int i = 0; i < 5; i++)
             {
-                rich::typing(ascii1[i], 1);
+                rich::rich_print(ascii1[i], {}, 1+i*20); // 越来越慢
                 rich::cursor_load();
                 rich::cursor_down(1);
                 rich::cursor_save();
             }
+            sleep(6000); // 让它先在“恩”那儿闪一会儿
             rich::cursor_down_with_goto_start(4);
-            rich::typing("..........\n", 900);
+            rich::rich_print("......", {}, 2000);
             printf("%s", COLOR_FG_RED);
             for(int i = 0; i < (int)1e4; i++)
             {
@@ -77,10 +73,12 @@ int main() {
             
             rich::cursor_reset();
             rich::cursor_mv(3, 10);
-            rich::typing("You're cheating, right?\n");
+            rich::rich_print("You're cheating, right?", {}, 200);
+            rich::cursor_mv(3, 10);
+            rich::rich_print("You're cheating, right?", {COLOR_BG_RED, STYL_UNDERLINE});
             rich::cursor_mv(4, 10);
-            rich::typing("The cheater will be \n", 200);
-            sleep((unsigned int)998.244353);
+            rich::rich_print("The cheater will be ", {COLOR_BG_RED}, 600);
+            sleep((unsigned int)9982.44353);
             rich::screen_clear();
             rich::rich_print("FATAL: ", {COLOR_FG_WHITE, COLOR_BG_RED, STYL_BOLD});
             printf("Could not read the data, because %s????????????%s.\n", COLOR_FG_BLUE, STYL_CLEARALL);
@@ -93,11 +91,7 @@ int main() {
     }
     while(true)
     {
-        rich::cursor_save();
-        rich::rich_print("What's your LUOGU username?", {rich::color_rgb("#555555", false), STYL_DIM, STYL_ITALIC});
-        rich::cursor_load(); // 形成 Placeholder 效果
-        std::string name;
-        std::cin >> name;
+        std::string name = rich::rich_input("What's your LUOGU username?");
         if(name.compare("TLE_1S")==0)
         {
             break;
@@ -111,7 +105,7 @@ int main() {
     // 1ST STAGE: Greeting //
     /////////////////////////
     rich::screen_clear();
-    rich::typing(R"(
+    rich::rich_print(R"(
                                                   
                                                   
  ''';'''                      ,            ;      
@@ -119,7 +113,7 @@ int main() {
     ;     ,,,,;  ;    '  ;   ;   ;,,,,;    ;      
     ;    ;    ;  ;        ;''    ;         ;   ,, 
     ;    ',,,';  ;       ,'''',  ',,,,'    ',, '' 
-                         ',,,,'                   )", 3);
+                         ',,,,'                   )", {}, 3);
     
     std::string ascii1[8] = {
         "   ▀▄    █        ▄    ▀▄   ▄▀   ▄▄▄▄▄   █▄▄▄▄   ",
@@ -134,19 +128,19 @@ int main() {
     rich::cursor_up(7); rich::cursor_save();
     for(int i = 0; i < 8; i++)
     {
-        rich::typing(ascii1[i], 3);
+        rich::rich_print(ascii1[i], {}, 3);
         rich::cursor_load();
         rich::cursor_down(1);
         rich::cursor_save();
     }
     sleep(1536);
 
-    rich::typing(R"(
+    rich::rich_print(R"(
           ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⠀⠀⠀⠀⠀⠀⢀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
           ⠀⠈⢹⠉⢀⠤⠤⡀⢠⠀⠀⡄⢸⠀⠀⡇⢀⠤⠤⡀⢠⡠⠤⡀⢀⠤⢄⡇⢀⠤⠤⡀⢠⡠⠤⡀⢀⣸⣀⠀⢠⠀⠀⡄⠀⠀⡇⠀⠀⠀⠀⠀⢸⠉⠉⡆⢠⡠⠤⡀⢀⠤⠤⡀⢀⠤⠤⡀⢀⠤⠤⡀⢠⡠⠤⡀⢀⣸⣀⠀⢀⠤⠤⡀⠀⠀⠀⠀
           ⢀⠀⢸⠀⢸⠀⠀⡇⠸⡀⢀⡇⢸⡜⢣⡇⢸⠀⠀⡇⢸⠀⠀⡇⢸⠀⠀⡇⢸⠒⠒⠃⢸⠀⠀⠁⠀⢸⠀⠀⢸⠀⠀⡇⠀⠀⡇⠀⠀⠀⠀⠀⢸⠉⠉⠀⢸⠀⠀⠁⢸⠒⠒⠃⠈⠒⠤⡀⢸⠒⠒⠃⢸⠀⠀⡇⠀⢸⠀⠀⠈⠒⠤⡀⠀⠀⠀⠀
           ⠈⠒⠊⠀⠈⠒⠒⠁⠀⣈⣁⠇⠘⠀⠀⠃⠈⠒⠒⠁⠘⠀⠀⠃⠈⠒⠊⠃⠈⠒⠒⠁⠘⠀⠀⠀⠀⠘⠀⠀⠈⠒⠊⠃⠀⠒⠓⠂⠀⠀⠀⠀⠘⠀⠀⠀⠘⠀⠀⠀⠈⠒⠒⠁⠈⠒⠒⠁⠈⠒⠒⠁⠘⠀⠀⠃⠀⠈⠒⠀⠈⠒⠒⠁⠀⠘⠃⠀
-)", 5);
+)", {}, 5);
     sleep(5000);
     // rich::test();
     rich::screen_clear();
