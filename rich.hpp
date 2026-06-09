@@ -14,6 +14,7 @@
 #define sleep(ms) usleep(ms * 1000) // 现用单位：毫秒；原单位：微秒
 #endif
 #include <stdio.h>
+#include <iostream>
 #include <initializer_list> // 多参数
 #include <string>
 
@@ -167,7 +168,8 @@ namespace rich {
 
     void screen_clear()
     {
-        printf("\e[H\e[2J\e[H"); // 将光标移回行首并清零
+        printf("\033[0m\033[H\033[2J\033[H\033[0m"); // 将光标移回行首并清零
+        fflush(stdout);
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
         system("cls");
 #elif defined(__unix) || defined(__unix__)
@@ -176,36 +178,49 @@ namespace rich {
     }
 
     /**
-     * @brief 带样式的文本输出。
+     * @brief 带样式的文本输出 & 模拟打字输出。
      * @param _str 要输出的字符串。
-     * @param _styles 带有的样式。
+     * @param _styles *可选* 带有的样式。
+     * @param _delay *可选* 时间间隔，单位为毫秒(ms)；建议一般输出 `120`。
      * @return 无。
      * 
      * @note 用大括号 `{}` 包裹样式列表。如 `rich_print("Ca+H", {STYL_BOLD, COLOR_FG_RED})`。
      */
-    void rich_print(std::string _str, std::initializer_list<std::string> _styles)
+    void rich_print(std::string _str, std::initializer_list<std::string> _styles = {}, unsigned int _delay = 0U)
     {
+        int sty_cnt = 0;
         for(auto i: _styles) // 可变参数
         {
             printf("%s", i.c_str()); // 应用所有样式
+            ++sty_cnt;
         }
-        printf("%s", _str.c_str());
-        printf(STYL_CLEARALL); // 清除所有样式
+        if(_delay == 0) printf("%s", _str.c_str());
+        else
+        {
+            for(int i = 0; i < _str.length(); i++)
+            {
+                printf("%c", _str[i]);
+                fflush(stdout);
+                sleep(_delay);
+            }
+        }
+        
+        if(sty_cnt > 0) printf(STYL_CLEARALL); // 清除所有样式
+        fflush(stdout);
     }
     /**
-     * @brief 模拟打字输出。
-     * @param _str 要输出的字符串。
-     * @param _delay *可选* 时间间隔，单位为毫秒(ms)；默认 `120`。
-     * @param _style *可选* 应用的样式；默认 `{}`。
+     * @brief 带有 placeholder 的问题输入。
+     * @param _quest 问题。
+     * @return `std::string`，回答。
      */
-    void typing(std::string _str, unsigned int _delay = 120U, std::initializer_list<std::string> _styles = {})
+    std::string rich_input(std::string _quest)
     {
-        for(int i = 0; i < _str.length(); i++)
-        {
-            printf("%c", _str[i]);
-            fflush(stdout);
-            sleep(_delay);
-        }
+        cursor_save();
+        rich_print(_quest, {rich::color_rgb("#555555", false), STYL_DIM, STYL_ITALIC});
+        cursor_load(); // 形成 Placeholder 效果
+        std::string in;
+        std::cin >> in;
+        return in;
     }
 
     /**
