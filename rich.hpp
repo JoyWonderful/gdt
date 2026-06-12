@@ -11,9 +11,11 @@
 #define sleep(ms) Sleep(ms) // 原单位：毫秒
 #elif defined(__unix) || defined(__unix__)
 #include <unistd.h>
+#include <termios.h>
 #define sleep(ms) usleep(ms * 1000) // 现用单位：毫秒；原单位：微秒
 #endif
 #include <stdio.h>
+#include <locale.h>
 #include <iostream>
 #include <initializer_list> // 多参数
 #include <string>
@@ -49,6 +51,8 @@
 #define STYL_HIDDEN    "\033[8m" /// 样式-隐藏
 #define STYL_DEL       "\033[9m" /// 样式-删除线
 
+//! 遇到换行符时输出缓冲区才会刷新，注意用 fflush 时机
+//! VT 序列中光标坐标行列均从 1 开始
 namespace rich {
 ///////////////
 // FUNCTIONS //
@@ -152,19 +156,89 @@ namespace rich {
         return ret; 
     }
 
-    void cursor_reset() {printf("\033[H");}
+    void cursor_reset() {printf("\033[H"); fflush(stdout);}
     /**
-     * @note 行、列从 0 开始
+     * @note 行、列从 1 开始。
      */
-    void cursor_mv(unsigned int line, unsigned int col) {printf("\033[%d;%dH", line, col);}
-    void cursor_up(unsigned int n) {printf("\033[%dA",n);}
-    void cursor_up_with_goto_start(unsigned int n) {printf("\033[%dF",n);}
+    void cursor_mv(unsigned int line, unsigned int col) {printf("\033[%d;%dH", line, col); fflush(stdout);}
+    void cursor_up(unsigned int n) {printf("\033[%dA",n); fflush(stdout);}
+    void cursor_up_with_goto_start(unsigned int n) {printf("\033[%dF",n); fflush(stdout);}
     void cursor_down(unsigned int n) {printf("\033[%dB",n);}
-    void cursor_down_with_goto_start(unsigned int n) {printf("\033[%dE",n);}
-    void cursor_right(unsigned int n) {printf("\033[%dC",n);}
-    void cursor_left(unsigned int n) {printf("\033[%dD",n);}
-    void cursor_save() {printf("\033[s");}
-    void cursor_load() {printf("\033[u");}
+    void cursor_down_with_goto_start(unsigned int n) {printf("\033[%dE",n); fflush(stdout);}
+    void cursor_right(unsigned int n) {printf("\033[%dC",n); fflush(stdout);}
+    void cursor_left(unsigned int n) {printf("\033[%dD",n); fflush(stdout);}
+    void cursor_save() {printf("\033[s"); fflush(stdout);}
+    void cursor_load() {printf("\033[u"); fflush(stdout);}
+    /**
+     * @brief 获取光标坐标。
+     * @param _row 行将被传递到此变量中。
+     * @param _col 列将被传递到此变量中。
+     * @return `bool`。`true` 表示成功；`false` 表示失败。
+     * 
+     * @note 行、列从 1 开始。  
+     * @details 由 Deepseek 辅助完成。尽力了...
+     */
+    bool cursor_coord(int &_row, int &_col)
+    {
+    #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+        HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+        CONSOLE_SCREEN_BUFFER_INFO csbi;
+        if (GetConsoleScreenBufferInfo(hConsole, &csbi)) {
+            // 返回的坐标是从 0 开始的，转换为从 1 开始以保持与 ANSI 版本一致
+            _row = csbi.dwCursorPosition.Y + 1;
+            _col = csbi.dwCursorPosition.X + 1;
+            return true;
+        }
+        return false;
+    #elif defined(__unix) || defined(__unix__)
+        struct termios old_tio, new_tio;
+        
+        // 获取当前终端属性
+        if (tcgetattr(STDIN_FILENO, &old_tio) != 0) return false;
+        new_tio = old_tio;
+        
+        // 关闭规范模式(ICANON)和回显(ECHO)
+        // 规范模式会导致行缓冲，必须关闭才能立即读到无换行的数据
+        new_tio.c_lflag &= ~(ICANON | ECHO);
+        // 设置 VMIN 和 VTIME，VMIN=1 表示至少读 1 个字符才返回
+        new_tio.c_cc[VMIN] = 1;
+        new_tio.c_cc[VTIME] = 0;
+        
+        if (tcsetattr(STDIN_FILENO, TCSANOW, &new_tio) != 0) return false;
+        
+        // 发送查询光标位置命令
+        std::cout << "\033[6n" << std::flush;
+        
+        // 读取响应，直到遇到 'R'
+        std::string response;
+        char ch;
+        while (read(STDIN_FILENO, &ch, 1) == 1)
+        {
+            response += ch;
+            if (ch == 'R') break;
+            // 防止意外无限循环
+            if (response.size() > 32) break;
+        }
+        
+        // 恢复原始终端属性
+        tcsetattr(STDIN_FILENO, TCSANOW, &old_tio);
+        
+        // 解析响应: 格式为 `ESC[行;列R`。从 1 开始
+        if (response.size() < 4 || response[0] != '\033' || response[1] != '[') return false;
+        
+        size_t semicolon = response.find(';');
+        size_t r_pos = response.find('R');
+        if (semicolon == std::string::npos || r_pos == std::string::npos) return false;
+        
+        try {
+            _row = std::stoi(response.substr(2, semicolon - 2));
+            _col = std::stoi(response.substr(semicolon + 1, r_pos - semicolon - 1));
+            return true;
+        } catch (...) {
+            return false;
+        }
+    #endif
+    }
 
     void screen_clear()
     {
@@ -181,7 +255,7 @@ namespace rich {
      * @brief 带样式的文本输出 & 模拟打字输出。
      * @param _str 要输出的字符串。
      * @param _styles *可选* 带有的样式。
-     * @param _delay *可选* 时间间隔，单位为毫秒(ms)；建议一般输出 `120`。
+     * @param _delay *可选* 时间间隔，单位为毫秒(ms)；建议一般输出 `40`。
      * @return 无。
      * 
      * @note 用大括号 `{}` 包裹样式列表。如 `rich_print("Ca+H", {STYL_BOLD, COLOR_FG_RED})`。
@@ -221,6 +295,40 @@ namespace rich {
         std::string in;
         std::cin >> in;
         return in;
+    }
+    /**
+     * @brief 逐字擦除。
+     * @param _num *可选* 擦除的列数。默认为 `0`。若为 `0`，则擦除一整行。
+     * @param _delay *可选* 延迟时间。默认为 `10U`。
+     * @return 无。
+     * 
+     * @attention 中文字按两列算！
+     * @attention 只可擦除一行内的内容。
+     */
+    void rich_erase(unsigned int _num = 0, unsigned int _delay = 10U)
+    {
+        if(_num == 0)
+        {
+            int row, col;
+            cursor_coord(row, col);
+            _num = col - 1; // 由于光标处在一行末尾，则它的位置为需要擦除的列 +1
+        }
+        for(int i = 1; i <= _num; i++)
+        {
+            rich::cursor_left(1);
+            printf("\033[0K");
+            sleep(_delay);
+        }
+    }
+
+    /**
+     * @brief 将标题设置为 `_str`。
+     * @param _str 要设置的标题。
+     * @return 无。
+     */
+    void title_set(std::string _str)
+    {
+        std::cout << "\033]0;" << _str << "\007" << std::flush;
     }
 
     /**
