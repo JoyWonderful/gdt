@@ -255,7 +255,7 @@ namespace rich {
      * @brief 带样式的文本输出 & 模拟打字输出。
      * @param _str 要输出的字符串。
      * @param _styles *可选* 带有的样式。
-     * @param _delay *可选* 时间间隔，单位为毫秒(ms)；建议一般输出 `40`。
+     * @param _delay *可选* 时间间隔，单位为毫秒(ms)；建议一般输出 `120`。
      * @return 无。
      * 
      * @note 用大括号 `{}` 包裹样式列表。如 `rich_print("Ca+H", {STYL_BOLD, COLOR_FG_RED})`。
@@ -273,7 +273,13 @@ namespace rich {
         {
             for(int i = 0; i < _str.length(); i++)
             {
-                printf("%c", _str[i]);
+                if ((_str[i] & 0xE0) == 0xE0) // 3字节字符，Unicode range:0x0800~0xFFFF (UTF-8: 0b1110XXXX 0b10XXXXXX 0b10XXXXXX)（X 为任意可行数字）
+                {   // 即判断是否为UTF-8中文字符的第一个字节 UTF-8 3 字节字符（中文字符，Unicode range:0x4E00~0x9FFF，包含在内）
+                    // 0b1110XXXX 为 0xE0XX
+                    printf("%c%c%c", _str[i], _str[i+1], _str[i+2]);
+                    i += 2;
+                }
+                else printf("%c", _str[i]);
                 fflush(stdout);
                 sleep(_delay);
             }

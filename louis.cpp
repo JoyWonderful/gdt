@@ -66,9 +66,9 @@ int main() {
             rich::cursor_down_with_goto_start(4);
             rich::rich_print("......", {}, 2000);
             printf("%s", COLOR_FG_RED);
-            for(int i = 0; i < (int)1e4; i++)
+            for(int i = 0; i < 100; i++)
             {
-                printf("????????????????????????????????????");
+                printf("???????????");
             }
             printf("%s", STYL_CLEARALL);
             sleep(3000);
@@ -131,6 +131,7 @@ int main() {
     for(int i = 0; i < 8; i++)
     {
         rich::rich_print(ascii1[i], {}, 3);
+        if(i == 7) continue;
         rich::cursor_load();
         rich::cursor_down(1);
         rich::cursor_save();
@@ -150,9 +151,10 @@ int main() {
     ///////////////////////////////////////////////
     // 2ND STAGE: The Long March of Programming? //
     ///////////////////////////////////////////////
-    const unsigned int T = 40 // 说话时间
+    const unsigned int T = 120 // 说话时间
     , TC = 10; // 擦除时间
     rich::rich_print("因为不知道怎么开场，所以就这么开场了:)", {STYL_DEL}, T);
+    sleep(512);
     rich::rich_erase(0, TC);
 
     return 0;
