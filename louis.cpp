@@ -12,6 +12,9 @@
 #include "rich.hpp"
 #include <locale.h>
 
+// 方便用的宏
+#define p(_str) rich::rich_print(_str, {}, T)
+
 int main() {
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
 #pragma message("万恶的 Windows，疯狂的 Microsoft")
@@ -26,6 +29,7 @@ int main() {
     /////////////////////////
     // 0TH STAGE: Question //
     /////////////////////////
+    rich::title_set("QUESTION");
     rich::screen_clear();
     rich::rich_print("********SAFETY QUESTIONS********\n", {COLOR_BG_WHITE, COLOR_FG_BLACK, STYL_BOLD});
     while(true)
@@ -38,9 +42,8 @@ int main() {
         else if(name.compare("Alan")==0 || name.compare("alan")==0 || name.compare("WangZeen")==0 || name.compare("WangZeen")==0) // 论如何科学地再建一座
         {// FAKE GREETING
             rich::screen_clear();
+            rich::cursor_down(2);
             rich::rich_print(R"(
-                                                  
-                                                  
  ''';'''                      ,            ;      
     ;    ,'''',  ;,''',  ,''','  ,'''',  ,,;,, ;; 
     ;     ,,,,;  ;    '  ;   ;   ;,,,,;    ;      
@@ -58,6 +61,7 @@ int main() {
             for(int i = 0; i < 5; i++)
             {
                 rich::rich_print(ascii1[i], {}, 1+i*20); // 越来越慢
+                if(i == 4) continue;
                 rich::cursor_load();
                 rich::cursor_down(1);
                 rich::cursor_save();
@@ -66,7 +70,7 @@ int main() {
             rich::cursor_down_with_goto_start(4);
             rich::rich_print("......", {}, 2000);
             printf("%s", COLOR_FG_RED);
-            for(int i = 0; i < 100; i++)
+            for(int i = 0; i < 1000; i++)
             {
                 printf("???????????");
             }
@@ -91,6 +95,7 @@ int main() {
         }
         else rich::rich_print("Invalid.\n", {COLOR_FG_MAGENTA});
     }
+    rich::title_set("i've got better question for ya.");
     while(true)
     {
         std::string name = rich::rich_input("What's your LUOGU username?");
@@ -106,10 +111,10 @@ int main() {
     /////////////////////////
     // 1ST STAGE: Greeting //
     /////////////////////////
+    rich::title_set("greetings.");
     rich::screen_clear();
+    rich::cursor_down(2);
     rich::rich_print(R"(
-                                                  
-                                                  
  ''';'''                      ,            ;      
     ;    ,'''',  ;,''',  ,''','  ,'''',  ,,;,, ;; 
     ;     ,,,,;  ;    '  ;   ;   ;,,,,;    ;      
@@ -151,11 +156,17 @@ int main() {
     ///////////////////////////////////////////////
     // 2ND STAGE: The Long March of Programming? //
     ///////////////////////////////////////////////
-    const unsigned int T = 120 // 说话时间
-    , TC = 10; // 擦除时间
-    rich::rich_print("因为不知道怎么开场，所以就这么开场了:)", {STYL_DEL}, T);
-    sleep(512);
+    const unsigned int T = 120, // 说话时间
+    TC = 10, // 擦除时间
+    TS = 256; // 一句话的间隔时间
+    rich::title_set("INTRO");
+    rich::rich_print("因为不知道怎么开场，所以就这么开场了:)", {STYL_DEL, STYL_DIM}, T); sleep(TS);
     rich::rich_erase(0, TC);
+    p("这就是用 `"); rich::rich_print("printf", {rich::color_rgb("#dcdcaa", false)}, T); p("()` 堆成的一个动画而已。\n"); sleep(TS);
+    p("介绍我接触编程的经过（？\n"); sleep(TS);
+    p("至于为何要送给"); rich::rich_print("你", {STYL_BOLD, STYL_UNDERLINE}); sleep(1500); rich::cursor_right(2); p("大概因为你也是一名"); rich::rich_print("曾经的？", {STYL_DIM}, T); rich::rich_erase(8, TC); p(" OIer 吧。"); sleep(TS);
 
+    printf("\n");
+    rich::screen_clear();
     return 0;
 }
