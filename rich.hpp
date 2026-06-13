@@ -255,7 +255,7 @@ namespace rich {
      * @brief 带样式的文本输出 & 模拟打字输出。
      * @param _str 要输出的字符串。
      * @param _styles *可选* 带有的样式。
-     * @param _delay *可选* 时间间隔，单位为毫秒(ms)；建议一般输出 `120`。
+     * @param _delay *可选* 时间间隔，单位为毫秒(ms)；建议一般输出 `120`。默认为 `0`。
      * @return 无。
      * 
      * @note 用大括号 `{}` 包裹样式列表。如 `rich_print("Ca+H", {STYL_BOLD, COLOR_FG_RED})`。
@@ -296,7 +296,7 @@ namespace rich {
     std::string rich_input(std::string _quest)
     {
         cursor_save();
-        rich_print(_quest, {rich::color_rgb("#555555", false), STYL_DIM, STYL_ITALIC});
+        rich_print(_quest, {rich::color_rgb("#737373", false), STYL_ITALIC}); // 再 DIM 就看不到了
         cursor_load(); // 形成 Placeholder 效果
         std::string in;
         std::cin >> in;
@@ -335,6 +335,10 @@ namespace rich {
     void title_set(std::string _str)
     {
         std::cout << "\033]0;" << _str << "\007" << std::flush;
+    #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+        std::string tit = "title " + _str;
+        system(tit.c_str());
+    #endif
     }
 
     /**
