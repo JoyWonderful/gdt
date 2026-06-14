@@ -156,6 +156,19 @@ namespace rich {
         std::string ret = cret;
         return ret; 
     }
+    /**
+     * @brief 生成超链接的 OSC 序列
+     * @param _uri 网址；URL。
+     * @param _text 显示的文字。若为空，则使用 URL。
+     * @return 生成的序列。
+     * 
+     * @see https://terminfo.dev/extensions/osc-8-hyperlinks
+     */
+    std::string hyper_link(std::string _uri, std::string _text = "")
+    {
+        if(_text == "") _text = _uri;
+        return "\033]8;;"+_uri+"\007"+_text+"\033]8;;\007";
+    }
 
     void cursor_reset() {printf("\033[H"); fflush(stdout);}
     /**
@@ -279,37 +292,40 @@ namespace rich {
      * @param _str 要输出的字符串。
      * @param _styles *可选* 带有的样式。
      * @param _delay *可选* 时间间隔，单位为毫秒(ms)；建议一般输出 `120`。默认为 `0`。
-     * @return 无。
+     * @return 输出的宽度。
      * 
      * @note 用大括号 `{}` 包裹样式列表。如 `rich_print("Ca+H", {STYL_BOLD, COLOR_FG_RED})`。
      */
-    void rich_print(std::string _str, std::initializer_list<std::string> _styles = {}, unsigned int _delay = 0U)
+    int rich_print(std::string _str, std::initializer_list<std::string> _styles = {}, unsigned int _delay = 0U)
     {
         int sty_cnt = 0;
+        int out_leng = 0;
         for(auto i: _styles) // 可变参数
         {
             printf("%s", i.c_str()); // 应用所有样式
             ++sty_cnt;
         }
         if(_delay == 0) printf("%s", _str.c_str());
-        else
+        for(int i = 0; i < _str.length(); i++)
         {
-            for(int i = 0; i < _str.length(); i++)
-            {
-                if ((_str[i] & 0xE0) == 0xE0) // 3字节字符，Unicode range:0x0800~0xFFFF (UTF-8: 0b1110XXXX 0b10XXXXXX 0b10XXXXXX)（X 为任意可行数字）
-                {   // 即判断是否为UTF-8中文字符的第一个字节 UTF-8 3 字节字符（中文字符，Unicode range:0x4E00~0x9FFF，包含在内）
-                    // 0b1110XXXX 为 0xE0XX
-                    printf("%c%c%c", _str[i], _str[i+1], _str[i+2]);
-                    i += 2;
-                }
-                else printf("%c", _str[i]);
-                fflush(stdout);
-                sleep(_delay);
+            if ((_str[i] & 0xE0) == 0xE0) // 3字节字符，Unicode range:0x0800~0xFFFF (UTF-8: 0b1110XXXX 0b10XXXXXX 0b10XXXXXX)（X 为任意可行数字）
+            {   // 即判断是否为UTF-8中文字符的第一个字节 UTF-8 3 字节字符（中文字符，Unicode range:0x4E00~0x9FFF，包含在内）
+                // 0b1110XXXX 为 0xE0XX
+                if(_delay) printf("%c%c%c", _str[i], _str[i+1], _str[i+2]);
+                i += 2;
+                out_leng += 2;
             }
+            else
+            {
+                if(_delay) printf("%c", _str[i]);
+                ++out_leng;
+            }
+            if(_delay) {fflush(stdout); sleep(_delay);}
         }
         
         if(sty_cnt > 0) printf(STYL_CLEARALL); // 清除所有样式
         fflush(stdout);
+        return out_leng;
     }
     /**
      * @brief 带有 placeholder 的问题输入。
@@ -334,6 +350,7 @@ namespace rich {
      * @attention 中文字按两列算！
      * @attention 若擦到开头，则会从上一行末尾开始。
      * @attention 擦除完毕，光标正好处于最后一个擦除的位置。例如 `abc|` => erase(1, 0); => `ab|`。
+     * @note 你可能需要 `rich_print` 获取显示长度。
      */
     void rich_erase(unsigned int _num = 0, unsigned int _delay = 10U)
     {
@@ -348,15 +365,14 @@ namespace rich {
             int row, col, srow, scol;
             cursor_coord(row, col);
             screen_size_get(srow, scol);
+            rich::cursor_left(1);
+            printf("\033[0K");
+            sleep(_delay);
             if(col == 1 && i != _num)
             {
                 cursor_mv(row-1, scol);
                 printf("\033[0K");
-                continue;
             }
-            rich::cursor_left(1);
-            printf("\033[0K");
-            sleep(_delay);
         }
     }
 
@@ -402,8 +418,8 @@ namespace rich {
         rich_print("#bb00ff", {color_rgb("#bb00ff", true), STYL_BOLD, COLOR_FG_BLACK});
         printf("\nWaiting for 1000ms...\n");
         sleep(1000);
-        printf("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"); // 132 个 a
-        rich_erase(130, 1);
+        printf("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"); // 236 个 a
+        rich_erase(230, 1);
         printf("b");
         printf("\nWaiting for 5000ms...\n");
         sleep(5000);
