@@ -15,6 +15,7 @@
 // 方便用的宏
 #define p(_str) rich::rich_print(_str, {}, T)
 
+//! 输出时列数控制在 99 以内，行数控制在 19 以内。
 int main() {
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
 #pragma message("万恶的 Windows，疯狂的 Microsoft")
@@ -22,15 +23,53 @@ int main() {
     if(!setup_stat) {
         printf("Warning: VT mode set failed. If you're running this in conhost, styles will be disabled.\n");
     }
+
+    int __row, __col;
+    rich::screen_size_get(__row, __col);
+    if(__col < 99) system("mode con cols=99");
+    if(__row < 19) system("mode con lines=19");
+    else
+    {
+        char __cmd[100];
+        sprintf(&__cmd[0], "mode con lines=%d", __row);
+        system(__cmd);
+    }
+
+    // Deepseek 辅助开始
+    /*
+    // 1. 获取控制台输出句柄
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    if (hConsole == INVALID_HANDLE_VALUE) {
+        return 1;
+    }
+
+    // 2. 配置字体信息结构体
+    CONSOLE_FONT_INFOEX fontInfo = { 0 };
+    fontInfo.cbSize = sizeof(CONSOLE_FONT_INFOEX);
+
+    // 然后设置你关心的字段
+    fontInfo.dwFontSize.Y = 24;       // 设置字体高度
+    fontInfo.FontWeight = FW_NORMAL;  // 使用常量 400，更清晰
+    wcscpy_s(fontInfo.FaceName, L"Cascadia Mono");
+
+    // nFont 和 dwFontSize.X 等其他字段可以保留为0，这通常是安全的
+
+    // 3. 应用新字体
+    if (!SetCurrentConsoleFontEx(hConsole, FALSE, &fontInfo)) {
+        // 如果失败，可以调用 GetLastError() 获取错误码
+        return 1;
+    }*/
+    // Deepseek 辅助结束
 #endif
+    // rich::test();
     printf("\033[?12h"); // 启用光标闪烁
     setlocale(LC_ALL, "zh_CN.UTF-8"); // 正确处理中文
 
     /////////////////////////
     // 0TH STAGE: Question //
     /////////////////////////
-    rich::title_set("QUESTION");
     rich::screen_clear();
+    rich::title_set("QUESTION");
     rich::rich_print("********SAFETY QUESTIONS********\n", {COLOR_BG_WHITE, COLOR_FG_BLACK, STYL_BOLD});
     while(true)
     {
@@ -70,9 +109,13 @@ int main() {
             rich::cursor_down_with_goto_start(4);
             rich::rich_print("......", {}, 2000);
             printf("%s", COLOR_FG_RED);
-            for(int i = 0; i < 1000; i++)
+            int row, col;
+            rich::screen_size_get(row, col);
+            rich::screen_clear();
+            for(int i = 0; i < row * col - 1; i++)
             {
-                printf("???????????");
+                printf("?");
+                fflush(stdout);
             }
             printf("%s", STYL_CLEARALL);
             sleep(3000);
@@ -144,10 +187,10 @@ int main() {
     sleep(1536);
 
     rich::rich_print(R"(
-          ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⠀⠀⠀⠀⠀⠀⢀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-          ⠀⠈⢹⠉⢀⠤⠤⡀⢠⠀⠀⡄⢸⠀⠀⡇⢀⠤⠤⡀⢠⡠⠤⡀⢀⠤⢄⡇⢀⠤⠤⡀⢠⡠⠤⡀⢀⣸⣀⠀⢠⠀⠀⡄⠀⠀⡇⠀⠀⠀⠀⠀⢸⠉⠉⡆⢠⡠⠤⡀⢀⠤⠤⡀⢀⠤⠤⡀⢀⠤⠤⡀⢠⡠⠤⡀⢀⣸⣀⠀⢀⠤⠤⡀⠀⠀⠀⠀
-          ⢀⠀⢸⠀⢸⠀⠀⡇⠸⡀⢀⡇⢸⡜⢣⡇⢸⠀⠀⡇⢸⠀⠀⡇⢸⠀⠀⡇⢸⠒⠒⠃⢸⠀⠀⠁⠀⢸⠀⠀⢸⠀⠀⡇⠀⠀⡇⠀⠀⠀⠀⠀⢸⠉⠉⠀⢸⠀⠀⠁⢸⠒⠒⠃⠈⠒⠤⡀⢸⠒⠒⠃⢸⠀⠀⡇⠀⢸⠀⠀⠈⠒⠤⡀⠀⠀⠀⠀
-          ⠈⠒⠊⠀⠈⠒⠒⠁⠀⣈⣁⠇⠘⠀⠀⠃⠈⠒⠒⠁⠘⠀⠀⠃⠈⠒⠊⠃⠈⠒⠒⠁⠘⠀⠀⠀⠀⠘⠀⠀⠈⠒⠊⠃⠀⠒⠓⠂⠀⠀⠀⠀⠘⠀⠀⠀⠘⠀⠀⠀⠈⠒⠒⠁⠈⠒⠒⠁⠈⠒⠒⠁⠘⠀⠀⠃⠀⠈⠒⠀⠈⠒⠒⠁⠀⠘⠃⠀)", {}, 5);
+           ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⠀⠀⠀⠀⠀⠀⢀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+           ⠀⠈⢹⠉⢀⠤⠤⡀⢠⠀⠀⡄⢸⠀⠀⡇⢀⠤⠤⡀⢠⡠⠤⡀⢀⠤⢄⡇⢀⠤⠤⡀⢠⡠⠤⡀⢀⣸⣀⠀⢠⠀⠀⡄⠀⠀⡇⠀⠀⠀⠀⠀⢸⠉⠉⡆⢠⡠⠤⡀⢀⠤⠤⡀⢀⠤⠤⡀⢀⠤⠤⡀⢠⡠⠤⡀⢀⣸⣀⠀⢀⠤⠤⡀⠀⠀⠀⠀
+           ⢀⠀⢸⠀⢸⠀⠀⡇⠸⡀⢀⡇⢸⡜⢣⡇⢸⠀⠀⡇⢸⠀⠀⡇⢸⠀⠀⡇⢸⠒⠒⠃⢸⠀⠀⠁⠀⢸⠀⠀⢸⠀⠀⡇⠀⠀⡇⠀⠀⠀⠀⠀⢸⠉⠉⠀⢸⠀⠀⠁⢸⠒⠒⠃⠈⠒⠤⡀⢸⠒⠒⠃⢸⠀⠀⡇⠀⢸⠀⠀⠈⠒⠤⡀⠀⠀⠀⠀
+           ⠈⠒⠊⠀⠈⠒⠒⠁⠀⣈⣁⠇⠘⠀⠀⠃⠈⠒⠒⠁⠘⠀⠀⠃⠈⠒⠊⠃⠈⠒⠒⠁⠘⠀⠀⠀⠀⠘⠀⠀⠈⠒⠊⠃⠀⠒⠓⠂⠀⠀⠀⠀⠘⠀⠀⠀⠘⠀⠀⠀⠈⠒⠒⠁⠈⠒⠒⠁⠈⠒⠒⠁⠘⠀⠀⠃⠀⠈⠒⠀⠈⠒⠒⠁⠀⠘⠃⠀)", {}, 5);
     sleep(5000);
     // rich::test();
     rich::screen_clear();
@@ -163,8 +206,9 @@ int main() {
     rich::rich_print("因为不知道怎么开场，所以就这么开场了:)", {STYL_DEL, STYL_DIM}, T); sleep(TS);
     rich::rich_erase(0, TC);
     p("这就是用 `"); rich::rich_print("printf", {rich::color_rgb("#dcdcaa", false)}, T); p("()` 堆成的一个动画而已。\n"); sleep(TS);
-    p("介绍我接触编程的经过（？\n"); sleep(TS);
+    p("这里开始介绍我接触编程的经过（？\n"); sleep(TS);
     p("至于为何要送给"); rich::rich_print("你", {STYL_BOLD, STYL_UNDERLINE}); sleep(1500); rich::cursor_right(2); p("大概因为你也是一名"); rich::rich_print("曾经的？", {STYL_DIM}, T); rich::rich_erase(8, TC); p(" OIer 吧。"); sleep(TS);
+    rich::screen_clear();
 
     printf("\n");
     rich::screen_clear();

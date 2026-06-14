@@ -12,6 +12,7 @@
 #elif defined(__unix) || defined(__unix__)
 #include <unistd.h>
 #include <termios.h>
+#include <sys/ioctl.h>
 #define sleep(ms) usleep(ms * 1000) // 现用单位：毫秒；原单位：微秒
 #endif
 #include <stdio.h>
@@ -159,6 +160,7 @@ namespace rich {
     void cursor_reset() {printf("\033[H"); fflush(stdout);}
     /**
      * @note 行、列从 1 开始。
+     * @note 假如到了行首、行尾、列首、列尾，只会卡在那不动了。
      */
     void cursor_mv(unsigned int line, unsigned int col) {printf("\033[%d;%dH", line, col); fflush(stdout);}
     void cursor_up(unsigned int n) {printf("\033[%dA",n); fflush(stdout);}
@@ -176,7 +178,7 @@ namespace rich {
      * @return `bool`。`true` 表示成功；`false` 表示失败。
      * 
      * @note 行、列从 1 开始。  
-     * @details 由 Deepseek 辅助完成。尽力了...
+     * @details Linux 部分 由 Deepseek 辅助完成。尽力了...
      */
     bool cursor_coord(int &_row, int &_col)
     {
@@ -250,6 +252,27 @@ namespace rich {
         system("clear");
 #endif
     }
+    /** 
+     * @brief 获取控制台窗口大小。
+     * @param _row 行将被传递到此变量中。
+     * @param _col 列将被传递到此变量中。
+     * @return 无。
+    */
+    void screen_size_get(int &_row, int &_col)
+    {
+    #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+        HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+        CONSOLE_SCREEN_BUFFER_INFO csbi;
+        GetConsoleScreenBufferInfo(hOut, &csbi);
+        _row = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+        _col = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+    #elif defined(__unix) || defined(__unix__)
+        winsize wz;
+        ioctl(STDOUT_FILENO,TIOCGWINSZ, &wz);
+        _row = (int)wz.ws_row;
+        _col = (int)wz.ws_col;
+    #endif
+    }
 
     /**
      * @brief 带样式的文本输出 & 模拟打字输出。
@@ -309,7 +332,8 @@ namespace rich {
      * @return 无。
      * 
      * @attention 中文字按两列算！
-     * @attention 只可擦除一行内的内容。
+     * @attention 若擦到开头，则会从上一行末尾开始。
+     * @attention 擦除完毕，光标正好处于最后一个擦除的位置。例如 `abc|` => erase(1, 0); => `ab|`。
      */
     void rich_erase(unsigned int _num = 0, unsigned int _delay = 10U)
     {
@@ -317,10 +341,19 @@ namespace rich {
         {
             int row, col;
             cursor_coord(row, col);
-            _num = col - 1; // 由于光标处在一行末尾，则它的位置为需要擦除的列 +1
+            _num = col - 1; // 由于光标处在一行末尾，则它的位置为需要擦除的列 -1
         }
         for(int i = 1; i <= _num; i++)
         {
+            int row, col, srow, scol;
+            cursor_coord(row, col);
+            screen_size_get(srow, scol);
+            if(col == 1 && i != _num)
+            {
+                cursor_mv(row-1, scol);
+                printf("\033[0K");
+                continue;
+            }
             rich::cursor_left(1);
             printf("\033[0K");
             sleep(_delay);
@@ -369,6 +402,11 @@ namespace rich {
         rich_print("#bb00ff", {color_rgb("#bb00ff", true), STYL_BOLD, COLOR_FG_BLACK});
         printf("\nWaiting for 1000ms...\n");
         sleep(1000);
+        printf("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"); // 132 个 a
+        rich_erase(130, 1);
+        printf("b");
+        printf("\nWaiting for 5000ms...\n");
+        sleep(5000);
         printf("test done.\n");
     }
 }
