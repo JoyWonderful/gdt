@@ -317,6 +317,15 @@ namespace rich {
             }
             else
             {
+                if(_str[i]=='\033' && _str[i+1]==']' && _str[i+2]=='8') // 判定为超链接
+                {
+                    int pos = _str.find('\007', i);
+                    int len = pos - i + 1;
+                    std::string out = _str.substr(i, len);
+                    std::cout << out << std::flush;
+                    i += len - 1;
+                    continue;
+                }
                 if(_delay) printf("%c", _str[i]);
                 ++out_leng;
             }
