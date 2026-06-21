@@ -205,7 +205,7 @@ int main()
     // 2ND STAGE: The Long March of Programming? //
     ///////////////////////////////////////////////
     rich::title_set("INTRO");
-    rich::rich_print("因为不知道怎么开场，所以就这么开场了:)", {STYL_DEL, STYL_DIM}, T); sleep(TS);
+    rich::rich_print("这段本来应该有个前情提要的，但是被删掉了。", {STYL_DEL, STYL_DIM}, T); sleep(TS);
     rich::rich_erase(0, TC);
     p("这就是用 `"); rich::rich_print("printf", {rich::color_rgb("#dcdcaa", false)}, T); p("()` 堆成的一个动画而已。\n"); sleep(TS);
     p("这里开始介绍我接触编程的经过（？\n"); sleep(TS);
@@ -214,9 +214,6 @@ int main()
     rich::screen_clear();
 
     rich::title_set("Once Upon a Time");
-    rich::rich_print("超级前情提要：", {STYL_NEGATIVE}, T); sleep(TS); p("爸爸妈妈开着一家"); rich::rich_print("用激光切割机加工服装", {COLOR_FG_YELLOW}, T); rich::rich_print("（我也不知道该怎么表述啊，很小众的）", {STYL_DEL}, T);  p("的厂。里面需要用电脑来控制机器。\n"); sleep(TS);
-    p("那个时候，厂里面还在用 "); rich::rich_print("Windows XP", {COLOR_FG_YELLOW}, T); p("。最常干的也就是动一动鼠标，把光标移到 QQ 的图标上看看提示。\n"); sleep(TS);
-    rich::rich_print("提要结束\n", {STYL_NEGATIVE}, T); sleep(TS);
     p("最早接触编程就是父母不知为何买了个"); rich::rich_print("优学派", {COLOR_FG_YELLOW, STYL_ITALIC}, T); rich::rich_print("Umix1", {COLOR_FG_YELLOW, STYL_ITALIC, STYL_DIM}, T); p("。"); sleep(TS);
     p("里面自带一个“"); rich::rich_print("编程猫 PAD", {rich::color_rgb("#ec443d", false), rich::color_rgb("#fec433", true)}, T); p("”。两个姐姐告诉我，那就是 Scratch 的中文名。"); int c1 = rich::rich_print("（其实不是，'编程猫'是中国深圳点猫科技有限公司的，和 Scratch 没有任何关系。他们算是搭了一个本土化的社区和有关初学者编程的一切应用）", {STYL_DIM}, T/3); sleep(TS*2); rich::rich_erase(c1); p("由于那时还没上过信息课，我很好奇。\n"); sleep(TS);
     p("那里面有课程，教我们（因为三个人都挤在平板前看...）进行简单的图形化编程。\n"); sleep(TS);
