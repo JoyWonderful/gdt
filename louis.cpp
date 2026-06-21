@@ -229,7 +229,7 @@ int main()
     printf("\033[0J"); fflush(stdout); // 从光标擦除到屏尾
     rich::title_set("Once Upon a Time");
     p("不知道你有没有把那个项目完成？作何感想？\n"); sleep(TS);
-    p("然后，因为这个东西没什么新的了。我们就把它"); rich::rich_print("扔在那儿", {COLOR_FG_RED}, T); sleep(TS*2); rich::rich_erase(6); p("放在那儿不管不问了。\n"); sleep(TST*2);
+    p("然后，因为这个东西没什么新的了。我们就把它"); rich::rich_print("扔在那儿", {COLOR_FG_RED}, T); sleep(TS*2); rich::rich_erase(8); p("放在那儿不管不问了。\n"); sleep(TST*2);
     printf("\n"); rich::rich_print("我们是时候进入下一个阶段了。", {STYL_ITALIC, COLOR_FG_GREEN, STYL_BOLD});
     sleep(TST*2);
 
