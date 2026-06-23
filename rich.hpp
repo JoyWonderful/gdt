@@ -339,7 +339,7 @@ namespace rich {
     /**
      * @brief 带有 placeholder 的问题输入。
      * @param _quest 问题。
-     * @param _styles 自定义 placeholder 样式。默认为 `rich::color_rgb("#737373", false), STYL_ITALIC`
+     * @param _styles 自定义 placeholder 样式。
      * @return `std::string`，回答。
      */
     std::string rich_input(std::string _quest,
@@ -391,11 +391,11 @@ namespace rich {
      * @brief 展示“选择后修改”的效果。
      * @param _orig_str 原本输出的字符串。
      * @param _new_str 修改后的字符串。
-     * @param _orig_styles 应用于原本输出的字符串的样式，默认为 `{}`。
-     * @param _new_styles 应用于修改后的字符串的样式，默认为 `{}`。
-     * @param _orig_delay 用于原本输出字符串的 `rich_print()` 的 `_delay` 参数，默认为 `120U`。
-     * @param _new_delay 用于修改后字符串的 `rich_print()` 的 `_delay` 参数，默认为 `0U`。
-     * @param _wait_delay “原本输出”与“选择”效果之间、“选择”效果与“修改替换”之间的等待时间，默认为 `128U`。
+     * @param _orig_styles *可选* 应用于原本输出的字符串的样式。
+     * @param _new_styles *可选* 应用于修改后的字符串的样式。
+     * @param _orig_delay *可选* 用于原本输出字符串的 `rich_print()` 的 `_delay` 参数，默认为 `120U`。
+     * @param _new_delay *可选* 用于修改后字符串的 `rich_print()` 的 `_delay` 参数，默认为 `0U`。
+     * @param _wait_delay *可选* “原本输出”与“选择”效果之间、“选择”效果与“修改替换”之间的等待时间，默认为 `128U`。
      * @return 无。
      * 
      * @see `rich_print()`
