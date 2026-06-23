@@ -339,12 +339,14 @@ namespace rich {
     /**
      * @brief 带有 placeholder 的问题输入。
      * @param _quest 问题。
+     * @param _styles 自定义 placeholder 样式。默认为 `rich::color_rgb("#737373", false), STYL_ITALIC`
      * @return `std::string`，回答。
      */
-    std::string rich_input(std::string _quest)
+    std::string rich_input(std::string _quest,
+        std::initializer_list<std::string> _styles = {rich::color_rgb("#737373", false), STYL_ITALIC})
     {
         cursor_save();
-        rich_print(_quest, {rich::color_rgb("#737373", false), STYL_ITALIC}, 0); // 再 DIM 就看不到了
+        rich_print(_quest, _styles, 0); // 再 DIM 就看不到了
         cursor_load(); // 形成 Placeholder 效果
         std::string in;
         std::cin >> in;
