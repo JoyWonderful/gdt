@@ -404,10 +404,10 @@ namespace rich {
         unsigned int _orig_delay = 120U, unsigned int _new_delay = 0, unsigned int _wait_delay = 150U)
     {
         cursor_save();
-        rich_print(_orig_str, _orig_styles, _orig_delay); sleep(_wait_delay); // 先正常输出要求的字符串
+        int leng = rich_print(_orig_str, _orig_styles, _orig_delay); sleep(_wait_delay); // 先正常输出要求的字符串
         cursor_load();
         rich_print(_orig_str, {STYL_NEGATIVE}, 0); sleep(_wait_delay); // 把它高亮（模拟选择）出来并等待
-        cursor_load();
+        rich_erase(leng, 0); // 避免修改后的输出比原字符串来得短
         rich_print(_new_str, _new_styles, _new_delay); // 替换
     }
 
