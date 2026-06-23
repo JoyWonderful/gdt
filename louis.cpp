@@ -15,10 +15,10 @@
 // 方便用的宏
 #define p(_str) rich::rich_print(_str, {}, T)
 
-const unsigned int T = 120, // 说话时间
-    TC = 10, // 擦除时间，Clear
-    TS = 256, // 一句话的间隔时间，Sentence
-    TST = 900; // 场景间隔时间，STage
+const unsigned int T = 120; // 说话时间
+const unsigned int TC = 10; // 擦除时间，Clear
+const unsigned int TS = 256; // 一句话的间隔时间，Sentence
+const unsigned int TST = 900; // 场景间隔时间，STage。你可能更想把它 *2 用
 
 //! 输出时列数控制在 99 以内，行数控制在 19 以内。
 int main()
@@ -76,7 +76,7 @@ int main()
     /////////////////////////
     rich::screen_clear();
     rich::title_set("QUESTION");
-    rich::rich_print("********SAFETY QUESTIONS********\n", {COLOR_BG_WHITE, COLOR_FG_BLACK, STYL_BOLD});
+    rich::rich_print("********SAFETY QUESTIONS********\n", {COLOR_BG_WHITE, COLOR_FG_BLACK, STYL_BOLD}, 0);
     while(true)
     {
         std::string name = rich::rich_input("Who are you?(in English, without space)");
@@ -130,19 +130,19 @@ int main()
             rich::cursor_mv(3, 10);
             rich::rich_print("You're cheating, right?", {}, 200);
             rich::cursor_mv(3, 10);
-            rich::rich_print("You're cheating, right?", {COLOR_BG_RED, STYL_UNDERLINE});
+            rich::rich_print("You're cheating, right?", {COLOR_BG_RED, STYL_UNDERLINE}, 0);
             rich::cursor_mv(4, 10);
             rich::rich_print("The cheater will be ", {COLOR_BG_RED}, 600);
             sleep((unsigned int)9982.44353);
             rich::screen_clear();
-            rich::rich_print("FATAL: ", {COLOR_FG_WHITE, COLOR_BG_RED, STYL_BOLD});
+            rich::rich_print("FATAL: ", {COLOR_FG_WHITE, COLOR_BG_RED, STYL_BOLD}, 0);
             printf("Could not read the data, because %s????????????%s.\n", COLOR_FG_BLUE, STYL_CLEARALL);
             printf("Program will be closed in 5s...\n");
             sleep(5000);
             rich::screen_clear();
             return 0; // 让作弊者重开吧
         }
-        else rich::rich_print("Invalid.\n", {COLOR_FG_MAGENTA});
+        else rich::rich_print("Invalid.\n", {COLOR_FG_MAGENTA}, 0);
     }
     rich::title_set("i've got better question for ya.");
     while(true)
@@ -152,9 +152,9 @@ int main()
         {
             break;
         }
-        else rich::rich_print("Invalid.\n", {COLOR_FG_MAGENTA});
+        else rich::rich_print("Invalid.\n", {COLOR_FG_MAGENTA}, 0);
     }
-    rich::rich_print("Correct.\n", {COLOR_FG_GREEN});
+    rich::rich_print("Correct.\n", {COLOR_FG_GREEN}, 0);
     sleep(1024);
 
     /////////////////////////
@@ -209,7 +209,7 @@ int main()
     rich::rich_erase(0, TC);
     p("这就是用 `"); rich::rich_print("printf", {rich::color_rgb("#dcdcaa", false)}, T); p("()` 堆成的一个动画而已。\n"); sleep(TS);
     p("这里开始介绍我接触编程的经过（？\n"); sleep(TS);
-    p("至于为何要把这段送给"); rich::rich_print("你", {STYL_BOLD, STYL_UNDERLINE}); sleep(1500); rich::cursor_right(2); p("大概因为你也是一名"); rich::rich_print("曾经的？", {STYL_DIM}, T); rich::rich_erase(8, TC); p(" OIer 吧。"); sleep(TS*2);
+    p("至于为何要把这段送给"); rich::rich_print("你", {STYL_BOLD, STYL_UNDERLINE}, 0); sleep(1500); rich::cursor_right(2); p("大概因为你也是一名"); rich::rich_print("曾经的？", {STYL_DIM}, T); rich::rich_erase(8, TC); p(" OIer 吧。"); sleep(TS*2);
     sleep(TST*2);
     rich::screen_clear();
 
@@ -229,9 +229,12 @@ int main()
     printf("\033[0J"); fflush(stdout); // 从光标擦除到屏尾
     rich::title_set("Once Upon a Time");
     p("不知道你有没有把那个项目完成？作何感想？\n"); sleep(TS);
-    p("然后，因为这个东西没什么新的了。我们就把它"); rich::rich_print("扔在那儿", {COLOR_FG_RED}, T); sleep(TS*2); rich::rich_erase(8); p("放在那儿不管不问了。\n"); sleep(TST*2);
-    printf("\n"); rich::rich_print("我们是时候进入下一个阶段了。", {STYL_ITALIC, COLOR_FG_GREEN, STYL_BOLD});
+    p("然后，因为这个东西没什么新的了。我们就把它"); rich::rich_modify("扔在那儿", "放在那儿", {COLOR_FG_RED}, {}, T); p("不管不问了。"); sleep(TST*2);
+    printf("\n"); rich::rich_print("我们是时候进入下一个阶段了。\n", {STYL_ITALIC, COLOR_FG_GREEN, STYL_BOLD}, 0);
     sleep(TST*2);
+    rich::rich_input("输入 Y 并按 Enter 继续。");
+
+    rich::title_set("Here comes the REAL Scratch.");
 
     printf("\n");
     rich::screen_clear();
