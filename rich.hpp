@@ -291,12 +291,12 @@ namespace rich {
      * @brief 带样式的文本输出 & 模拟打字输出。
      * @param _str 要输出的字符串。
      * @param _styles *可选* 带有的样式。
-     * @param _delay *可选* 时间间隔，单位为毫秒(ms)；建议一般输出 `120`。默认为 `0`。
+     * @param _delay *可选* 时间间隔，单位为毫秒(ms)；建议一般输出 `120`。默认为 `120`。
      * @return 输出的宽度。
      * 
      * @note 用大括号 `{}` 包裹样式列表。如 `rich_print("Ca+H", {STYL_BOLD, COLOR_FG_RED})`。
      */
-    int rich_print(std::string _str, std::initializer_list<std::string> _styles = {}, unsigned int _delay = 0U)
+    int rich_print(std::string _str, std::initializer_list<std::string> _styles = {}, unsigned int _delay = 120U)
     {
         int sty_cnt = 0;
         int out_leng = 0;
@@ -344,7 +344,7 @@ namespace rich {
     std::string rich_input(std::string _quest)
     {
         cursor_save();
-        rich_print(_quest, {rich::color_rgb("#737373", false), STYL_ITALIC}); // 再 DIM 就看不到了
+        rich_print(_quest, {rich::color_rgb("#737373", false), STYL_ITALIC}, 0); // 再 DIM 就看不到了
         cursor_load(); // 形成 Placeholder 效果
         std::string in;
         std::cin >> in;
@@ -383,6 +383,32 @@ namespace rich {
                 printf("\033[0K");
             }
         }
+        fflush(stdout);
+    }
+    /**
+     * @brief 展示“选择后修改”的效果。
+     * @param _orig_str 原本输出的字符串。
+     * @param _new_str 修改后的字符串。
+     * @param _orig_styles 应用于原本输出的字符串的样式，默认为 `{}`。
+     * @param _new_styles 应用于修改后的字符串的样式，默认为 `{}`。
+     * @param _orig_delay 用于原本输出字符串的 `rich_print()` 的 `_delay` 参数，默认为 `120U`。
+     * @param _new_delay 用于修改后字符串的 `rich_print()` 的 `_delay` 参数，默认为 `0U`。
+     * @param _wait_delay “原本输出”与“选择”效果之间、“选择”效果与“修改替换”之间的等待时间，默认为 `128U`。
+     * @return 无。
+     * 
+     * @see `rich_print()`
+     */
+    void rich_modify(std::string _orig_str, std::string _new_str,
+        std::initializer_list<std::string> _orig_styles = {},
+        std::initializer_list<std::string> _new_styles = {},
+        unsigned int _orig_delay = 120U, unsigned int _new_delay = 0, unsigned int _wait_delay = 150U)
+    {
+        cursor_save();
+        rich_print(_orig_str, _orig_styles, _orig_delay); sleep(_wait_delay); // 先正常输出要求的字符串
+        cursor_load();
+        rich_print(_orig_str, {STYL_NEGATIVE}, 0); sleep(_wait_delay); // 把它高亮（模拟选择）出来并等待
+        cursor_load();
+        rich_print(_new_str, _new_styles, _new_delay); // 替换
     }
 
     /**
@@ -422,9 +448,9 @@ namespace rich {
             rich_print(name, {STYLE_LST_VALUE[i-1]});
             if(i % 3 == 0) printf("\n");
         }
-        rich_print("rgb(233, 50, 69)", {color_rgb("rgb(233, 50, 69)", true)});
-        rich_print("rgb(126, 228, 37)", {color_rgb("rgb(126,228,37)", true)});
-        rich_print("#bb00ff", {color_rgb("#bb00ff", true), STYL_BOLD, COLOR_FG_BLACK});
+        rich_print("rgb(233, 50, 69)", {color_rgb("rgb(233, 50, 69)", true)}, 0);
+        rich_print("rgb(126, 228, 37)", {color_rgb("rgb(126,228,37)", true)}, 0);
+        rich_print("#bb00ff", {color_rgb("#bb00ff", true), STYL_BOLD, COLOR_FG_BLACK}, 0);
         printf("\nWaiting for 1000ms...\n");
         sleep(1000);
         printf("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"); // 236 个 a
