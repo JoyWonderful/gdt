@@ -127,10 +127,10 @@ namespace rich {
     /**
      * @brief 生成使文字为 RGB 颜色的 VT 序列。
      * @param _color_str 颜色。格式可以为 `rgb({r},{g},{b})`（空格无所谓）；也可以为 `#FFFFFF` 的十六进制形式。
-     * @param _is_bg 是否为背景色。若为 `true`，则控制背景色；否则为前景色。
+     * @param _is_bg *可选* 是否为背景色。若为 `true`，则控制背景色；否则为前景色（默认）。
      * @return 为 `std::string` 类型的 VT 序列。可以作为 `rich_print` 的参数。
      */
-    std::string color_rgb(std::string _color_str, bool _is_bg)
+    std::string color_rgb(std::string _color_str, bool _is_bg = false)
     {
         unsigned int r = 0, g = 0, b = 0;
         if(_color_str[0] == '#')
@@ -343,7 +343,7 @@ namespace rich {
      * @return `std::string`，回答。
      */
     std::string rich_input(std::string _quest,
-        std::initializer_list<std::string> _styles = {rich::color_rgb("#737373", false), STYL_ITALIC})
+        std::initializer_list<std::string> _styles = {rich::color_rgb("#737373"), STYL_ITALIC})
     {
         cursor_save();
         rich_print(_quest, _styles, 0); // 再 DIM 就看不到了

@@ -13,11 +13,20 @@
 #include <locale.h>
 
 // 方便用的宏
-#define p(_str) rich::rich_print(_str, {}, T)
+/**
+ * @brief 带样式的文本输出 & 模拟打字输出。
+ * @param _str 要输出的字符串。
+ * @param _styles *可选* 带有的样式。
+ * @param _delay *可选* 时间间隔，单位为毫秒(ms)；建议一般输出 `120`。默认为 `120`。
+ * @return 输出的宽度。
+ * 
+ * @note 用大括号 `{}` 包裹样式列表。如 `rich_print("Ca+H", {STYL_BOLD, COLOR_FG_RED})`。
+ */
+#define p rich::rich_print
 
-const unsigned int T = 120; // 说话时间
+const unsigned int T = 120; // 说话每个字的间隔时间
 const unsigned int TC = 10; // 擦除时间，Clear
-const unsigned int TS = 256; // 一句话的间隔时间，Sentence
+const unsigned int TS = 256; // 每句话之间的间隔时间，Sentence
 const unsigned int TST = 900; // 场景间隔时间，STage。你可能更想把它 *2 用
 
 //! 输出时列数控制在 99 以内，行数控制在 19 以内。
@@ -205,22 +214,22 @@ int main()
     // 2ND STAGE: The Long March of Programming? //
     ///////////////////////////////////////////////
     rich::title_set("INTRO");
-    rich::rich_print("这段本来应该有个前情提要的，但是被删掉了。", {STYL_DEL, STYL_DIM}, T); sleep(TS);
+    p("这段本来应该有个前情提要的，但是被删掉了。", {STYL_DEL, STYL_DIM}); sleep(TS);
     rich::rich_erase(0, TC);
-    p("这就是用 `"); rich::rich_print("printf", {rich::color_rgb("#dcdcaa", false)}, T); p("()` 堆成的一个动画而已。\n"); sleep(TS);
+    p("这就是用 `"); p("printf", {rich::color_rgb("#dcdcaa")}); p("()` 堆成的一个动画而已。\n"); sleep(TS);
     p("这里开始介绍我接触编程的经过（？\n"); sleep(TS);
-    p("至于为何要把这段送给"); rich::rich_print("你", {STYL_BOLD, STYL_UNDERLINE}, 0); sleep(1500); rich::cursor_right(2); p("大概因为你也是一名"); rich::rich_print("曾经的？", {STYL_DIM}, T); rich::rich_erase(8, TC); p(" OIer 吧。"); sleep(TS*2);
+    p("至于为何要把这段送给"); p("你", {STYL_BOLD, STYL_UNDERLINE}, 0); sleep(1500); rich::cursor_right(2); p("大概因为你也是一名"); p("曾经的？", {STYL_DIM}); rich::rich_erase(8, TC); p(" OIer 吧。"); sleep(TS*2);
     sleep(TST*2);
     rich::screen_clear();
 
     rich::title_set("Once Upon a Time");
-    p("最早接触编程就是父母不知为何买了个"); rich::rich_print("优学派", {COLOR_FG_YELLOW, STYL_ITALIC}, T); rich::rich_print("Umix1", {COLOR_FG_YELLOW, STYL_ITALIC, STYL_DIM}, T); p("。"); sleep(TS);
-    p("里面自带一个“"); rich::rich_print("编程猫 PAD", {rich::color_rgb("#ec443d", false), rich::color_rgb("#fec433", true)}, T); p("”。两个姐姐告诉我，那就是 Scratch 的中文名。"); int c1 = rich::rich_print("（其实不是，'编程猫'是中国深圳点猫科技有限公司的，和 Scratch 没有任何关系。他们算是搭了一个本土化的社区和有关初学者编程的一切应用）", {STYL_DIM}, T/3); sleep(TS*2); rich::rich_erase(c1); p("由于那时还没上过信息课，我很好奇。\n"); sleep(TS);
+    p("最早接触编程就是父母不知为何买了个"); p("优学派", {COLOR_FG_YELLOW, STYL_ITALIC}); p("Umix1", {COLOR_FG_YELLOW, STYL_ITALIC, STYL_DIM}); p("。"); sleep(TS);
+    p("里面自带一个“"); p("编程猫 PAD", {rich::color_rgb("#ec443d"), rich::color_rgb("#fec433", true)}); p("”。两个姐姐告诉我，那就是 Scratch 的中文名。"); int c1 = p("（其实不是，'编程猫'是中国深圳点猫科技有限公司的，和 Scratch 没有任何关系。他们算是搭了一个本土化的社区和有关初学者编程的一切应用）", {STYL_DIM}, T/3); sleep(TS*2); rich::rich_erase(c1); p("由于那时还没上过信息课，我很好奇。\n"); sleep(TS);
     p("那里面有课程，教我们（因为三个人都挤在平板前看...）进行简单的图形化编程。\n"); sleep(TS);
-    p("那个应用大概是"); rich::rich_print("优学派特供版", {COLOR_FG_YELLOW, STYL_ITALIC}, T); p("，"); rich::rich_print("表扬一下", {STYL_BOLD, STYL_UNDERLINE, COLOR_FG_RED}, T); sleep(TS*2); p("：有限的素材、超级难用的画板和"); rich::rich_print("超级慢的加载项目速度。\n", {rich::color_rgb("#b67300", false)}, 500); sleep(TS);
+    p("那个应用大概是"); p("优学派特供版", {COLOR_FG_YELLOW, STYL_ITALIC}); p("，"); p("表扬一下", {STYL_BOLD, STYL_UNDERLINE, COLOR_FG_RED}); sleep(TS*2); p("：有限的素材、超级难用的画板和"); p("超级慢的加载项目速度。\n", {rich::color_rgb("#b67300")}, 500); sleep(TS);
     p("即便如此，我们仍然津津有味，照着课程把里面所有的项目做了个遍。\n"); sleep(TS);
-    p("你可以去感受一下"); rich::rich_print(rich::hyper_link("https://kitten.codemao.cn/?course_id=5", "这个课程"), {COLOR_FG_BLUE}, T); p("。这是当时我(们)做过的最难的作品了，我们仨特别喜欢玩它。虽然说现在看来它"); rich::rich_print("非常简单", {COLOR_FG_CYAN}, T); p("吧。\n"); sleep(TS);
-    p("现在我才知道，我们当时做的就是"); rich::rich_print(rich::hyper_link("https://shequ.codemao.cn/course", "Kitten 公开课"), {COLOR_FG_BLUE}, T); p("里的所有东西。\n");
+    p("你可以去感受一下"); p(rich::hyper_link("https://kitten.codemao.cn/?course_id=5", "这个课程"), {COLOR_FG_BLUE}); p("。这是当时我(们)做过的最难的作品了，我们仨特别喜欢玩它。虽然说现在看来它"); p("非常简单", {COLOR_FG_CYAN}); p("吧。\n"); sleep(TS);
+    p("现在我才知道，我们当时做的就是"); p(rich::hyper_link("https://shequ.codemao.cn/course", "Kitten 公开课"), {COLOR_FG_BLUE}); p("里的所有东西。\n");
     sleep(TST);
     rich::title_set("You WANT to have a try.");
     rich::cursor_save();
@@ -229,12 +238,10 @@ int main()
     printf("\033[0J"); fflush(stdout); // 从光标擦除到屏尾
     rich::title_set("Once Upon a Time");
     p("不知道你有没有把那个项目完成？作何感想？\n"); sleep(TS);
-    p("然后，因为这个东西没什么新的了。我们就把它"); rich::rich_modify("扔在那儿", "放在那儿", {COLOR_FG_RED}, {}, T); p("不管不问了。"); sleep(TST*2);
-    printf("\n"); rich::rich_print("我们是时候进入下一个阶段了。\n", {STYL_ITALIC, COLOR_FG_GREEN, STYL_BOLD}, 0);
+    p("然后，因为这个东西没什么新的了。我们就把它"); rich::rich_modify("扔在那儿", "放在那儿", {COLOR_FG_RED}, {}); p("不管不问了。"); sleep(TST*2);
+    printf("\n"); p("我们是时候进入下一个阶段了。\n", {STYL_ITALIC, COLOR_FG_GREEN, STYL_BOLD}, 0);
     sleep(TST*2);
-    rich::rich_input("输入 Y 并按 Enter 继续。");
-
-    rich::title_set("Here comes the REAL Scratch.");
+    rich::rich_input("输入 Y 并按 Enter 继续。", {rich::color_rgb("#737373"), STYL_ITALIC, STYL_BLINK});
 
     printf("\n");
     rich::screen_clear();
