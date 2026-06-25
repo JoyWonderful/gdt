@@ -27,6 +27,7 @@
 #define waitfory rich::rich_input("输入 Y 并按 Enter 继续。", {rich::color_rgb("#737373"), STYL_ITALIC, STYL_BLINK})
 #define c(_content, _hex_rgb) rich::rich_print(_content, {rich::color_rgb(_hex_rgb)}, 32) // code
 
+// TODO: REMOVE TC & T
 const unsigned int T = 120; // 说话每个字的间隔时间
 const unsigned int TC = 10; // 擦除时间，Clear
 const unsigned int TS = 256; // 每句话之间的间隔时间，Sentence
@@ -294,7 +295,7 @@ int main()
     c("msgBox",CODE_FUNC); c("(",CODE_BRKT1); c("a",CODE_VAR); c(")\n",CODE_BRKT2);
     c("loop\n",CODE_FLOWCTRL);
     c("WSHshell",CODE_VAR); c(".",CODE_DFT); c("run",CODE_FUNC); c("(",CODE_BRKT1); c("\"cmd.exe /c shutdown /a\"",CODE_STR); c(")\n",CODE_BRKT1);
-    c("msgBox",CODE_FUNC); c("(",CODE_BRKT1); c("\"哈哈，真过瘾\"",CODE_STR); c(")\n",CODE_BRKT2);
+    c("msgBox",CODE_FUNC); c("(",CODE_BRKT1); c("\"哈哈，真过瘾\"",CODE_STR); c(")\n",CODE_BRKT1);
     //END code
     p("```", {STYL_DIM});
     sleep(TST);
@@ -306,7 +307,7 @@ int main()
     p("这脚本是个非常简单经典的恶搞程序。但在当时的我看来就是"); p("一个"); rich::rich_modify("拥有 Super Cow Powers", "非常神奇", {COLOR_FG_MAGENTA}, {STYL_BOLD}); p("的代码了。它竟然能让电脑自动关机？！\n"); sleep(TS);
     p("我和两个姐姐至少花了"); p("一小时", {COLOR_FG_YELLOW}); p("才把这段脚本从书上抄下来并**成功**运行。\n");  c1=p("现在我用了不到五分钟就把它写下来了。"); sleep(TS*2); rich::rich_erase(c1); sleep(TS);
     p("如果你在运行 Windows 10 也许你可以把它复制下来，用 "); p("ANSI(GB2312) 编码", {STYL_UNDERLINE, COLOR_FG_YELLOW}); p("保存为 "); p("test.vbs", {STYL_UNDERLINE}); p(" 运行"); rich::rich_modify("逝世？", "试试？\n", {STYL_DEL});
-    sleep(TST*2);
+    sleep(TST);
     waitfory;
     rich::cursor_up_with_goto_start(1);
     printf("\033[0J"); fflush(stdout);
@@ -314,9 +315,31 @@ int main()
     p("当时看了几页，我就"); p("**着了魔**", {STYL_BOLD, STYL_UNDERLINE}); p("。感觉自己家里的电脑全部"); p("都是漏洞", {COLOR_FG_RED}); p("，感觉这本书里面的东西都"); p("好高级", {COLOR_BG_MAGENTA}); p("。\n"); sleep(TS);
     p("我马上要求妈妈给我买一本。我也成为姐姐眼中的 '对"); rich::rich_modify("黑客攻防技术", "????", {}, {COLOR_FG_BLUE}, 30); p("感兴趣的"); p("发烧友' 了。\n"); sleep(TS);
     p("正因为如此，我还学到了："); p("Windows/CMD 命令、虚拟机的使用、注册表", {STYL_BOLD, STYL_UNDERLINE}); p("...etc\n"); sleep(TS);
-    p("我对批处理的了解催生了在 2024 CSP 中使用的"); p(rich::hyper_link("https://www.luogu.com.cn/discuss/967804","对拍批处理"), {COLOR_FG_BLUE}); p("。我也在考场上使用了，在小木棍的找规律中帮了我大忙。\n");
+    p("我对批处理的了解催生了在 2024 CSP 中使用的"); p(rich::hyper_link("https://www.luogu.com.cn/discuss/967804","对拍批处理"), {COLOR_FG_BLUE}); p("。我也在考场上使用了，在**小木棍的找规律**中帮了我大忙。\n");
     sleep(TST*2);
     p("Go for Python.\n", {STYL_ITALIC, COLOR_FG_GREEN, STYL_BOLD}, 0);
+    sleep(TST);
+    waitfory;
+    rich::screen_clear();
+
+    rich::title_set("Python & JoyWonderful");
+    p("五年级的时候？我顺理成章地进了 Python 班。然后就对 Python 产生了"); p("极大的兴趣。\n", {STYL_BOLD, STYL_UNDERLINE}); sleep(TS);
+    p("Python 有自己的"); p(rich::hyper_link("https://python.org/", "官方网站"), {COLOR_FG_BLUE}); rich::rich_modify("你不会不知道吧？", ""); p("。\n"); sleep(TS);
+    p("大概是上面的介绍让我有了兴趣，大概是别的什么原因，反正我开始去网上查找**任何关于 Python 的东西**来学。\n"); sleep(TS);
+    c1=p("依旧是与", {STYL_DIM}); c1+=p("优学派", {rich::color_rgb("#ddff00")}); c1+=p("有关的故事", {STYL_DIM}); sleep(TS*2); rich::rich_erase(c1);
+    p("由于当时的我认为在平板"); p("*便携式设备*", {STYL_ITALIC}); p("比在电脑上写 Python 代码更"); rich::rich_modify("能逃避当时家里唯一一台台式机坏掉的实情", "快速方便", {STYL_DEL}, {rich::color_rgb("#c1ff94")}, 90); p("，于是我就下载了一个 "); p("Pydroid", {rich::color_rgb("#3470ad",true)}); p(" 来进行我所有的 Python 项目。\n"); sleep(TS);
+    p("后来，我有了自己的笔记本电脑，优学派终于被"); p("彻底丢掉了", {COLOR_FG_RED, COLOR_BG_MAGENTA}); p("。我先用 IDLE，后用 Visual Studio Code 来编写我的 Python 程序\n"); sleep(TS);
+    p("从 ~2021 年底到 ~2022 年，我好像只学会了 **Python 的基本语法**以及 **turtle, tkinter 库的使用**，还让我见识了 **pip/包管理/依赖 的概念**。\n"); sleep(TS);
+    p(rich::hyper_link("https://drv-jywon.pages.dev/PRIVATE", "这里"), {COLOR_FG_BLUE}); p("是我当时写的 Python 项目，"); p("密码放在 ./drive-pwd.txt 里了", {COLOR_FG_YELLOW}); p("。请下载 My-Python-File.zip 并解压。\n"); sleep(TS);
+    c1=p("你应该看得懂英文吧？", {STYL_DIM}); sleep(TS*2); rich::rich_erase(c1);
+    p("按住 Ctrl 并单击即可访问链接。\n", {STYL_ITALIC, STYL_DIM}, 0);
+    sleep(TST);
+    waitfory;
+    rich::cursor_up_with_goto_start(2);
+    printf("\033[0J"); fflush(stdout);
+    p("你肯定不会仔细看代码；你电脑里肯定没有 Python 解释器；你肯定不会 `pip install <package name>` 来安装 Python Package；你肯定不会发现这是一个 git 仓库，因为它有 `.git` 的隐藏文件夹；你肯定不会用 `git log` 查看日志，不然你就会发现一团糟的 commit 记录。\n", {STYL_DIM, STYL_DEL}, 80);
+    sleep(TST*2);
+    p("Because of the environment(in China), I WILL become an OIer FOR SURE.\n", {STYL_ITALIC, COLOR_FG_GREEN, STYL_BOLD}, 0);
     sleep(TST);
     waitfory;
     rich::screen_clear();
