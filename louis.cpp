@@ -218,7 +218,8 @@ int main()
     ///////////////////////////////////////////////
     // 2ND STAGE: The Long March of Programming? //
     ///////////////////////////////////////////////
-    rich::title_set("INTRO");
+    //# 2.1
+    rich::title_set("2.1 INTRO");
     p("这段本来应该有个前情提要的，但是被删掉了。", {STYL_DEL, STYL_DIM}); sleep(TS);
     rich::rich_erase(0, TC);
     p("这就是用 `"); p("printf", {rich::color_rgb(CODE_FUNC)}); p("()` 堆成的一个动画而已。\n"); sleep(TS);
@@ -228,7 +229,8 @@ int main()
     waitfory;
     rich::screen_clear();
 
-    rich::title_set("Once Upon a Time");
+    //# 2.2
+    rich::title_set("2.2 Once Upon a Time");
     p("最早接触编程就是父母不知为何买了个"); p("优学派", {COLOR_FG_YELLOW, STYL_ITALIC}); p("Umix1", {COLOR_FG_YELLOW, STYL_ITALIC, STYL_DIM}); p("。"); sleep(TS);
     p("里面自带一个“"); p("编程猫 PAD", {rich::color_rgb("#ec443d"), rich::color_rgb("#fec433", true)}); p("”。两个姐姐告诉我，那就是 Scratch 的中文名。"); c1 = p("（其实不是，'编程猫'是中国深圳点猫科技有限公司的，和 Scratch 没有任何关系。他们算是搭了一个本土化的社区和有关初学者编程的一切应用）", {STYL_DIM}, T/3); sleep(TS*2); rich::rich_erase(c1); p("由于那时还没上过信息课，我很好奇。\n"); sleep(TS);
     p("那里面有课程，教我们（因为三个人都挤在平板前看...）进行简单的图形化编程。\n"); sleep(TS);
@@ -251,9 +253,10 @@ int main()
     waitfory;
     rich::screen_clear();
 
-    rich::title_set("Here comes the REAL programming.");
+    //# 2.3
+    rich::title_set("2.3 Here comes the REAL programming.");
     p("大约在上三年级的时候，由于"); p("童心智造", {rich::color_rgb("#f65a14")}); p("的大幅宣传，我去"); p("体验", {STYL_BOLD, STYL_UNDERLINE}); p("了一下它们的体验课程。\n"); sleep(TS);
-    c1 = p("（其实就是教我们 Scratch。）", {STYL_DIM}); sleep(TS*2); rich::rich_erase(c1); p("具体教什么忘了，总之就记得：开空调很冷；得益于编程猫我回答了“如果...那么”的问题，让老师很震惊；以及"); p("**班里面很多同学都来体验**", {STYL_BOLD, STYL_UNDERLINE}); printf("。\n"); sleep(TS); // HINT: 伏笔
+    c1 = p("（其实就是教我们 Scratch。）", {STYL_DIM}); sleep(TS*2); rich::rich_erase(c1); p("具体教什么忘了，总之就记得：开空调很冷；得益于编程猫我回答了“如果...那么”的问题，让老师很震惊；以及"); p("**班里面很多同学都来体验**", {STYL_BOLD, STYL_UNDERLINE}); printf("。\n"); sleep(TS);
     p("加之编程猫的体验在先，我觉得很有意思，于是就去真正地报名了。\n"); sleep(TS);
     p("具体学的什么？"); rich::rich_modify("由于记忆久远，再加上其他编程语言的学习，我全忘光了", "好像也没学什么\n", {COLOR_BG_RED}); sleep(TS);
     p("如果你不怕被我 "); p("Bug 百出的、抽象无比的", {COLOR_FG_MAGENTA}); p(" Scratch 项目震撼一整年:)，"); p("你可以去看看"); p(rich::hyper_link("https://xstxzz.scratch3.fun/users/userindex/5efd72384649dc1180d1cb59/", "我的 '象山童心智造 - 图形化编程社区' 的个人主页"), {COLOR_FG_BLUE}); p("。"); p("这算是我为我的 Scratcher 生涯留下的一座墓碑了。\n", {STYL_DEL});
@@ -271,7 +274,8 @@ int main()
     waitfory;
     rich::screen_clear();
 
-    rich::title_set("The chaos of batch & vbscript");
+    //# 2.4
+    rich::title_set("2.4 The chaos of batch & vbscript");
     p("四到五年级的时候，我大姐的好闺蜜不知从哪儿拿来一本"); p(rich::hyper_link("https://baike.baidu.com/item/%E9%BB%91%E5%AE%A2%E6%94%BB%E9%98%B2%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%EF%BC%9A%E5%85%A8%E6%96%B0%E7%B2%BE%E5%8D%8E%E7%89%88/61172689","《黑客攻防 从入门到精通》"), {rich::color_rgb("#ffcc00"), STYL_ITALIC}); c1 = p("北京希望电子出版社", {STYL_DIM,STYL_ITALIC}); sleep(TS*2); rich::rich_erase(c1); p("的书。"); p("反正就是把它给了大姐，然后大姐有把它给了我看。\n"); sleep(TS);
     p("重要的是，我"); rich::rich_modify("学", "接触"); p("到了 Batch & VBScript。编写了我**人生中**第一个真正意义上的 "); p("script", {STYL_BOLD, STYL_UNDERLINE}); p("。\n"); sleep(TS);
     p("下面我给你看看人生中第一个程序/(脚本?)长啥样吧。"); c1=p("这还是现在的我的优化版本", {STYL_DEL, STYL_DIM}, 30); sleep(TS*2); rich::rich_erase(c1);
@@ -321,7 +325,8 @@ int main()
     waitfory;
     rich::screen_clear();
 
-    rich::title_set("Python & JoyWonderful");
+    //# 2.5
+    rich::title_set("2.5 Python & JoyWonderful");
     p("五年级的时候？我顺理成章地进了 Python 班。然后就对 Python 产生了"); p("极大的兴趣。\n", {STYL_BOLD, STYL_UNDERLINE}); sleep(TS);
     p("Python 有自己的"); p(rich::hyper_link("https://python.org/", "官方网站"), {COLOR_FG_BLUE}); rich::rich_modify("你不会不知道吧？", ""); p("。\n"); sleep(TS);
     p("大概是上面的介绍让我有了兴趣，大概是别的什么原因，反正我开始去网上查找**任何关于 Python 的东西**来学。\n"); sleep(TS);
@@ -343,13 +348,19 @@ int main()
     waitfory;
     rich::screen_clear();
 
-    rich::title_set("Olympiad in Informatics");
+    //# 2.6
+    rich::title_set("2.6 Olympiad in Informatics");
     p("关于 `OI->C||C++` 又能说些什么呢？\n"); sleep(TS);
     p("其实也没什么好说的。你也很熟悉相似的经历吧？\n");
     p("Let's end this memory", {STYL_ITALIC, COLOR_BG_GREEN, STYL_BOLD}, 0); printf("\n");
     sleep(TST);
     waitfory;
     rich::screen_clear();
+
+    ///////////////////////////
+    // 3RD STAGE: Friends... //
+    ///////////////////////////
+    
 
     printf("\n");
     rich::screen_clear();
