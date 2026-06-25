@@ -82,7 +82,6 @@ int main()
     }*/
     // Deepseek 辅助结束
 #endif
-    // rich::test();
     printf("\033[?12h"); // 启用光标闪烁
     setlocale(LC_ALL, "zh_CN.UTF-8"); // 正确处理中文
 
@@ -346,10 +345,10 @@ int main()
 
     rich::title_set("Olympiad in Informatics");
     p("关于 `OI->C||C++` 又能说些什么呢？\n"); sleep(TS);
-    p("无非就是六年级进了 C++ 班。"); p(rich::hyper_link("https://vjudge.net/solution/37081183/sfkXyjILYKzIpOVcnddP", "The person who write down \"hello world\""), {COLOR_FG_BLUE}); p(" 还天真地不理解 "); rich::rich_modify("Olympiad in Informatics", "OI", {STYL_BOLD, STYL_UNDERLINE}, {STYL_BOLD, STYL_UNDERLINE}, 90); p(" 为何物，认为自己的终极目标就是做出一个让自己满意的项目，就像**他的** Python 项目一样。\n"); sleep(TS);
-    p("现在我们知道，"); p("课程的终极目标是为了", {COLOR_FG_RED}); rich::rich_modify("升学、得奖？", "...什么呢？\n", {STYL_HIDDEN}, {COLOR_FG_RED}); sleep(TS);
-    p("好吧，做出一道题也确实*给我成就感*。但我不知道 "); rich::rich_modify("Away From OI", "AFO", {STYL_BOLD}, {STYL_BOLD, STYL_UNDERLINE}); p(" 后又有什么意义呢？"); sleep(TS);
-    p("我现在是 AFOer 吗？\n", {STYL_BOLD, COLOR_FG_RED}, 5);
+    p("其实也没什么好说的。你也很熟悉相似的经历吧？\n");
+    p("Let's end this memory", {STYL_ITALIC, COLOR_BG_GREEN, STYL_BOLD}, 0); printf("\n");
+    sleep(TST);
+    waitfory;
     rich::screen_clear();
 
     printf("\n");
