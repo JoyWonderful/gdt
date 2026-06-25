@@ -276,7 +276,7 @@ int main()
 
     //# 2.4
     rich::title_set("2.4 The chaos of batch & vbscript");
-    p("四到五年级的时候，我大姐的好闺蜜不知从哪儿拿来一本"); p(rich::hyper_link("https://baike.baidu.com/item/%E9%BB%91%E5%AE%A2%E6%94%BB%E9%98%B2%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%EF%BC%9A%E5%85%A8%E6%96%B0%E7%B2%BE%E5%8D%8E%E7%89%88/61172689","《黑客攻防 从入门到精通》"), {rich::color_rgb("#ffcc00"), STYL_ITALIC}); c1 = p("北京希望电子出版社", {STYL_DIM,STYL_ITALIC}); sleep(TS*2); rich::rich_erase(c1); p("的书。"); p("反正就是把它给了大姐，然后大姐有把它给了我看。\n"); sleep(TS);
+    p("四到五年级的时候，我大姐的好闺蜜不知从哪儿拿来一本"); p(rich::hyper_link("https://baike.baidu.com/item/%E9%BB%91%E5%AE%A2%E6%94%BB%E9%98%B2%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%EF%BC%9A%E5%85%A8%E6%96%B0%E7%B2%BE%E5%8D%8E%E7%89%88/61172689","《黑客攻防 从入门到精通》"), {rich::color_rgb("#ffcc00"), STYL_ITALIC}); c1 = p("北京希望电子出版社", {STYL_DIM,STYL_ITALIC}); sleep(TS*2); rich::rich_erase(c1); p("的书。"); p("反正就是把它给了大姐，然后大姐又把它给了我看。\n"); sleep(TS);
     p("重要的是，我"); rich::rich_modify("学", "接触"); p("到了 Batch & VBScript。编写了我**人生中**第一个真正意义上的 "); p("script", {STYL_BOLD, STYL_UNDERLINE}); p("。\n"); sleep(TS);
     p("下面我给你看看人生中第一个程序/(脚本?)长啥样吧。"); c1=p("这还是现在的我的优化版本", {STYL_DEL, STYL_DIM}, 30); sleep(TS*2); rich::rich_erase(c1);
     printf("\n");
