@@ -378,7 +378,7 @@ namespace rich {
      * @param _new_styles *可选* 应用于修改后的字符串的样式。
      * @param _orig_delay *可选* 用于原本输出字符串的 `rich_print()` 的 `_delay` 参数，默认为 `120`。
      * @param _new_delay *可选* 用于修改后字符串的 `rich_print()` 的 `_delay` 参数，默认为 `0`。
-     * @param _wait_delay *可选* “原本输出”与“选择”效果之间、“选择”效果与“修改替换”之间的等待时间，默认为 `128`。
+     * @param _wait_delay *可选* “原本输出”与“选择”效果之间、“选择”效果与“修改替换”之间的等待时间，默认为 `150`。
      * @return 无。
      * 
      * @see `rich_print()`
