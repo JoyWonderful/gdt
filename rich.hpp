@@ -341,7 +341,7 @@ namespace rich {
      * @attention 中文字按两列算！
      * @attention 若擦到开头，则会从上一行末尾开始。
      * @attention 擦除完毕，光标正好处于最后一个擦除的位置。例如 `abc|` => erase(1, 0); => `ab|`。
-     * @note 你可能需要 `rich_print` 获取显示长度。
+     * @note 你可能需要 `rich_print()` 获取显示长度。
      */
     void rich_erase(int _num = 0, int _delay = 10)
     {
@@ -354,8 +354,9 @@ namespace rich {
         for(int i = 1; i <= _num; i++)
         {
             int row, col, srow, scol;
-            cursor_coord(row, col);
+            if(i == 1) cursor_coord(row, col);
             rich::cursor_left(1);
+            --col;
             printf("\033[0K");
             fflush(stdout);
             sleep(_delay);
@@ -363,6 +364,7 @@ namespace rich {
             {
                 screen_size_get(srow, scol);
                 cursor_mv(row-1, scol);
+                --row; col=scol;
                 printf("\033[0K");
                 fflush(stdout);
             }
