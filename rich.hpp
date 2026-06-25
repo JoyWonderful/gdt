@@ -132,7 +132,7 @@ namespace rich {
      */
     std::string color_rgb(std::string _color_str, bool _is_bg = false)
     {
-        unsigned int r = 0, g = 0, b = 0;
+        int r = 0, g = 0, b = 0;
         if(_color_str[0] == '#')
         {
             _color_str.erase(0, 1);
@@ -175,13 +175,13 @@ namespace rich {
      * @note 行、列从 1 开始。
      * @note 假如到了行首、行尾、列首、列尾，只会卡在那不动了。
      */
-    void cursor_mv(unsigned int line, unsigned int col) {printf("\033[%d;%dH", line, col); fflush(stdout);}
-    void cursor_up(unsigned int n) {printf("\033[%dA",n); fflush(stdout);}
-    void cursor_up_with_goto_start(unsigned int n) {printf("\033[%dF",n); fflush(stdout);}
-    void cursor_down(unsigned int n) {printf("\033[%dB",n);}
-    void cursor_down_with_goto_start(unsigned int n) {printf("\033[%dE",n); fflush(stdout);}
-    void cursor_right(unsigned int n) {printf("\033[%dC",n); fflush(stdout);}
-    void cursor_left(unsigned int n) {printf("\033[%dD",n); fflush(stdout);}
+    void cursor_mv(int line, int col) {printf("\033[%d;%dH", line, col); fflush(stdout);}
+    void cursor_up(int n) {printf("\033[%dA",n); fflush(stdout);}
+    void cursor_up_with_goto_start(int n) {printf("\033[%dF",n); fflush(stdout);}
+    void cursor_down(int n) {printf("\033[%dB",n);}
+    void cursor_down_with_goto_start(int n) {printf("\033[%dE",n); fflush(stdout);}
+    void cursor_right(int n) {printf("\033[%dC",n); fflush(stdout);}
+    void cursor_left(int n) {printf("\033[%dD",n); fflush(stdout);}
     void cursor_save() {printf("\033[s"); fflush(stdout);}
     void cursor_load() {printf("\033[u"); fflush(stdout);}
     /**
@@ -296,7 +296,7 @@ namespace rich {
      * 
      * @note 用大括号 `{}` 包裹样式列表。如 `rich_print("Ca+H", {STYL_BOLD, COLOR_FG_RED})`。
      */
-    int rich_print(std::string _str, std::initializer_list<std::string> _styles = {}, unsigned int _delay = 120U)
+    int rich_print(std::string _str, std::initializer_list<std::string> _styles = {}, int _delay = 120)
     {
         int sty_cnt = 0;
         int out_leng = 0;
@@ -355,7 +355,7 @@ namespace rich {
     /**
      * @brief 逐字擦除。
      * @param _num *可选* 擦除的列数。默认为 `0`。若为 `0`，则擦除一整行。
-     * @param _delay *可选* 延迟时间。默认为 `10U`。
+     * @param _delay *可选* 延迟时间。默认为 `10`。
      * @return 无。
      * 
      * @attention 中文字按两列算！
@@ -363,7 +363,7 @@ namespace rich {
      * @attention 擦除完毕，光标正好处于最后一个擦除的位置。例如 `abc|` => erase(1, 0); => `ab|`。
      * @note 你可能需要 `rich_print` 获取显示长度。
      */
-    void rich_erase(unsigned int _num = 0, unsigned int _delay = 10U)
+    void rich_erase(int _num = 0, int _delay = 10)
     {
         if(_num == 0)
         {
@@ -375,17 +375,18 @@ namespace rich {
         {
             int row, col, srow, scol;
             cursor_coord(row, col);
-            screen_size_get(srow, scol);
             rich::cursor_left(1);
             printf("\033[0K");
+            fflush(stdout);
             sleep(_delay);
             if(col == 1 && i != _num)
             {
+                screen_size_get(srow, scol);
                 cursor_mv(row-1, scol);
                 printf("\033[0K");
+                fflush(stdout);
             }
         }
-        fflush(stdout);
     }
     /**
      * @brief 展示“选择后修改”的效果。
@@ -393,9 +394,9 @@ namespace rich {
      * @param _new_str 修改后的字符串。
      * @param _orig_styles *可选* 应用于原本输出的字符串的样式。
      * @param _new_styles *可选* 应用于修改后的字符串的样式。
-     * @param _orig_delay *可选* 用于原本输出字符串的 `rich_print()` 的 `_delay` 参数，默认为 `120U`。
-     * @param _new_delay *可选* 用于修改后字符串的 `rich_print()` 的 `_delay` 参数，默认为 `0U`。
-     * @param _wait_delay *可选* “原本输出”与“选择”效果之间、“选择”效果与“修改替换”之间的等待时间，默认为 `128U`。
+     * @param _orig_delay *可选* 用于原本输出字符串的 `rich_print()` 的 `_delay` 参数，默认为 `120`。
+     * @param _new_delay *可选* 用于修改后字符串的 `rich_print()` 的 `_delay` 参数，默认为 `0`。
+     * @param _wait_delay *可选* “原本输出”与“选择”效果之间、“选择”效果与“修改替换”之间的等待时间，默认为 `128`。
      * @return 无。
      * 
      * @see `rich_print()`
@@ -403,7 +404,7 @@ namespace rich {
     void rich_modify(std::string _orig_str, std::string _new_str,
         std::initializer_list<std::string> _orig_styles = {},
         std::initializer_list<std::string> _new_styles = {},
-        unsigned int _orig_delay = 120U, unsigned int _new_delay = 0, unsigned int _wait_delay = 150U)
+        int _orig_delay = 120, int _new_delay = 0, int _wait_delay = 150)
     {
         cursor_save();
         int leng = rich_print(_orig_str, _orig_styles, _orig_delay); sleep(_wait_delay); // 先正常输出要求的字符串
@@ -447,7 +448,7 @@ namespace rich {
         {
             char name[100];
             sprintf(name, "%13s", STYLE_LST_NAME[i-1].c_str());
-            rich_print(name, {STYLE_LST_VALUE[i-1]});
+            rich_print(name, {STYLE_LST_VALUE[i-1]}, 0);
             if(i % 3 == 0) printf("\n");
         }
         rich_print("rgb(233, 50, 69)", {color_rgb("rgb(233, 50, 69)", true)}, 0);
@@ -456,7 +457,7 @@ namespace rich {
         printf("\nWaiting for 1000ms...\n");
         sleep(1000);
         printf("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"); // 236 个 a
-        rich_erase(230, 1);
+        rich_erase(230, 0);
         printf("b");
         printf("\nWaiting for 5000ms...\n");
         sleep(5000);
