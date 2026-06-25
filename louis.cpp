@@ -10,6 +10,7 @@
  * @date 2026-06-06
  */
 #include "rich.hpp"
+#include "codehi.hpp"
 #include <locale.h>
 
 // 方便用的宏
@@ -23,11 +24,14 @@
  * @note 用大括号 `{}` 包裹样式列表。如 `rich_print("Ca+H", {STYL_BOLD, COLOR_FG_RED})`。
  */
 #define p rich::rich_print
+#define waitfory rich::rich_input("输入 Y 并按 Enter 继续。", {rich::color_rgb("#737373"), STYL_ITALIC, STYL_BLINK})
 
 const unsigned int T = 120; // 说话每个字的间隔时间
 const unsigned int TC = 10; // 擦除时间，Clear
 const unsigned int TS = 256; // 每句话之间的间隔时间，Sentence
 const unsigned int TST = 900; // 场景间隔时间，STage。你可能更想把它 *2 用
+
+int r1 = 0,c1 = 0;
 
 //! 输出时列数控制在 99 以内，行数控制在 19 以内。
 int main()
@@ -216,15 +220,16 @@ int main()
     rich::title_set("INTRO");
     p("这段本来应该有个前情提要的，但是被删掉了。", {STYL_DEL, STYL_DIM}); sleep(TS);
     rich::rich_erase(0, TC);
-    p("这就是用 `"); p("printf", {rich::color_rgb("#dcdcaa")}); p("()` 堆成的一个动画而已。\n"); sleep(TS);
+    p("这就是用 `"); p("printf", {rich::color_rgb(CODE_FUNC)}); p("()` 堆成的一个动画而已。\n"); sleep(TS);
     p("这里开始介绍我接触编程的经过（？\n"); sleep(TS);
-    p("至于为何要把这段送给"); p("你", {STYL_BOLD, STYL_UNDERLINE}, 0); sleep(1500); rich::cursor_right(2); p("大概因为你也是一名"); p("曾经的？", {STYL_DIM}); rich::rich_erase(8, TC); p(" OIer 吧。"); sleep(TS*2);
-    sleep(TST*2);
+    p("至于为何要把这段送给"); p("你", {STYL_BOLD, STYL_UNDERLINE}, 0); sleep(1500); rich::cursor_right(2); p("大概因为你也是一名"); p("曾经的？", {STYL_DIM}); rich::rich_erase(8, TC); p(" OIer 吧。\n"); sleep(TS*2);
+    sleep(TST);
+    waitfory;
     rich::screen_clear();
 
     rich::title_set("Once Upon a Time");
     p("最早接触编程就是父母不知为何买了个"); p("优学派", {COLOR_FG_YELLOW, STYL_ITALIC}); p("Umix1", {COLOR_FG_YELLOW, STYL_ITALIC, STYL_DIM}); p("。"); sleep(TS);
-    p("里面自带一个“"); p("编程猫 PAD", {rich::color_rgb("#ec443d"), rich::color_rgb("#fec433", true)}); p("”。两个姐姐告诉我，那就是 Scratch 的中文名。"); int c1 = p("（其实不是，'编程猫'是中国深圳点猫科技有限公司的，和 Scratch 没有任何关系。他们算是搭了一个本土化的社区和有关初学者编程的一切应用）", {STYL_DIM}, T/3); sleep(TS*2); rich::rich_erase(c1); p("由于那时还没上过信息课，我很好奇。\n"); sleep(TS);
+    p("里面自带一个“"); p("编程猫 PAD", {rich::color_rgb("#ec443d"), rich::color_rgb("#fec433", true)}); p("”。两个姐姐告诉我，那就是 Scratch 的中文名。"); c1 = p("（其实不是，'编程猫'是中国深圳点猫科技有限公司的，和 Scratch 没有任何关系。他们算是搭了一个本土化的社区和有关初学者编程的一切应用）", {STYL_DIM}, T/3); sleep(TS*2); rich::rich_erase(c1); p("由于那时还没上过信息课，我很好奇。\n"); sleep(TS);
     p("那里面有课程，教我们（因为三个人都挤在平板前看...）进行简单的图形化编程。\n"); sleep(TS);
     p("那个应用大概是"); p("优学派特供版", {COLOR_FG_YELLOW, STYL_ITALIC}); p("，"); p("表扬一下", {STYL_BOLD, STYL_UNDERLINE, COLOR_FG_RED}); sleep(TS*2); p("：有限的素材、超级难用的画板和"); p("超级慢的加载项目速度。\n", {rich::color_rgb("#b67300")}, 500); sleep(TS);
     p("即便如此，我们仍然津津有味，照着课程把里面所有的项目做了个遍。\n"); sleep(TS);
@@ -232,16 +237,40 @@ int main()
     p("现在我才知道，我们当时做的就是"); p(rich::hyper_link("https://shequ.codemao.cn/course", "Kitten 公开课"), {COLOR_FG_BLUE}); p("里的所有东西。\n");
     sleep(TST);
     rich::title_set("You WANT to have a try.");
-    rich::cursor_save();
-    rich::rich_input("按住 Ctrl 并单击即可访问链接。\n这个网页版的虽然和当时的体验完全不同，但你应该去看看那个课程和课程列表，输入 Y 并按 Enter 继续。");
-    rich::cursor_load();
+    p("按住 Ctrl 并单击即可访问链接。\n这个网页版的虽然和当时的体验完全不同，但你应该去看看那个课程和课程列表\n", {STYL_DIM, STYL_ITALIC}, 0);
+    waitfory;
+    rich::cursor_up_with_goto_start(3);
     printf("\033[0J"); fflush(stdout); // 从光标擦除到屏尾
     rich::title_set("Once Upon a Time");
     p("不知道你有没有把那个项目完成？作何感想？\n"); sleep(TS);
-    p("然后，因为这个东西没什么新的了。我们就把它"); rich::rich_modify("扔在那儿", "放在那儿", {COLOR_FG_RED}, {}); p("不管不问了。"); sleep(TST*2);
-    printf("\n"); p("我们是时候进入下一个阶段了。\n", {STYL_ITALIC, COLOR_FG_GREEN, STYL_BOLD}, 0);
+    p("然后，因为这个东西没什么新的了。我们就把它"); rich::rich_modify("扔在那儿", "放在那儿", {COLOR_FG_RED}, {}); p("不管不问了。\n");
     sleep(TST*2);
-    rich::rich_input("输入 Y 并按 Enter 继续。", {rich::color_rgb("#737373"), STYL_ITALIC, STYL_BLINK});
+    p("我们是时候进入下一个阶段了。\n", {STYL_ITALIC, COLOR_FG_GREEN, STYL_BOLD}, 0);
+    sleep(TST);
+    waitfory;
+    rich::screen_clear();
+
+    rich::title_set("Here comes the REAL programming.");
+    p("大约在上三年级的时候，由于"); p("童心智造", {rich::color_rgb("#f65a14")}); p("的大幅宣传，我去"); p("体验", {STYL_BOLD, STYL_UNDERLINE}); p("了一下它们的体验课程。\n"); sleep(TS);
+    c1 = p("（其实就是教我们 Scratch。）", {STYL_DIM}); sleep(TS*2); rich::rich_erase(c1); p("具体教什么忘了，总之就记得：开空调很冷；得益于编程猫我回答了“如果...那么”的问题，让老师很震惊；以及"); p("**班里面很多同学都来体验**", {STYL_BOLD, STYL_UNDERLINE}); printf("。\n"); sleep(TS); // HINT: 伏笔
+    p("加之编程猫的体验在先，我觉得很有意思，于是就去真正地报名了。\n"); sleep(TS);
+    p("具体学的什么？"); rich::rich_modify("由于记忆久远，再加上其他编程语言的学习，我全忘光了", "好像也没学什么\n", {COLOR_BG_RED}); sleep(TS);
+    p("如果你不怕被我 "); p("Bug 百出的、抽象无比的", {COLOR_FG_MAGENTA}); p(" Scratch 项目震撼一整年:)，"); p("你可以去看看"); p(rich::hyper_link("https://xstxzz.scratch3.fun/users/userindex/5efd72384649dc1180d1cb59/", "我的 '象山童心智造 - 图形化编程社区' 的个人主页"), {COLOR_FG_BLUE}); p("。"); p("这算是我为我的 Scratcher 生涯留下的一座墓碑了。\n", {STYL_DEL});
+    sleep(TST);
+    p("按住 Ctrl 并单击即可访问链接。\n", {STYL_ITALIC, STYL_DIM}, 0);
+    waitfory;
+    rich::cursor_up_with_goto_start(2);
+    printf("\033[0J"); fflush(stdout);
+    p("很遗憾的是，这个账号我现在登录不上。\n"); sleep(TS);
+    p("现在想想，Scratch 的学习对我就是提起对下一门语言的兴趣。\n"); sleep(TS);
+    p("我好像"); rich::rich_modify("没学会什么有用的东西。", "只学到了变量、列表(list?)||数组(array?)、函数的概念。\n");
+    sleep(TST*2);
+    p("Next chapter?\n", {STYL_ITALIC, COLOR_FG_GREEN, STYL_BOLD}, 0);
+    sleep(TST);
+    waitfory;
+    rich::screen_clear();
+
+    rich::title_set("");
 
     printf("\n");
     rich::screen_clear();
