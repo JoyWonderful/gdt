@@ -206,52 +206,32 @@ namespace rich {
         }
         return false;
     #elif defined(__unix) || defined(__unix__)
-        struct termios old_tio, new_tio;
-        
-        // 获取当前终端属性
-        if (tcgetattr(STDIN_FILENO, &old_tio) != 0) return false;
-        new_tio = old_tio;
-        
-        // 关闭规范模式(ICANON)和回显(ECHO)
-        // 规范模式会导致行缓冲，必须关闭才能立即读到无换行的数据
-        new_tio.c_lflag &= ~(ICANON | ECHO);
-        // 设置 VMIN 和 VTIME，VMIN=1 表示至少读 1 个字符才返回
-        new_tio.c_cc[VMIN] = 1;
-        new_tio.c_cc[VTIME] = 0;
-        
-        if (tcsetattr(STDIN_FILENO, TCSANOW, &new_tio) != 0) return false;
-        
-        // 发送查询光标位置命令
-        std::cout << "\033[6n" << std::flush;
-        
-        // 读取响应，直到遇到 'R'
-        std::string response;
+        struct termios old_term, new_term;
+        // 保存当前终端设置
+        tcgetattr(STDIN_FILENO, &old_term);
+        new_term = old_term;
+        // 设置终端为原始模式
+        new_term.c_lflag &= ~(ICANON | ECHO);
+        tcsetattr(STDIN_FILENO, TCSANOW, &new_term);
+        // 发送查询指令
+        printf("\033[6n");
+        fflush(stdout);
+        // 读取响应
+        char buf[32] = {0};
+        int i = 0;
         char ch;
-        while (read(STDIN_FILENO, &ch, 1) == 1)
-        {
-            response += ch;
-            if (ch == 'R') break;
-            // 防止意外无限循环
-            if (response.size() > 32) break;
+        while (i < sizeof(buf) - 1) {
+            if (read(STDIN_FILENO, &ch, 1) != 1) break;
+            if (ch == 'R') break;  // 响应结束符
+            buf[i++] = ch;
         }
-        
-        // 恢复原始终端属性
-        tcsetattr(STDIN_FILENO, TCSANOW, &old_tio);
-        
-        // 解析响应: 格式为 `ESC[行;列R`。从 1 开始
-        if (response.size() < 4 || response[0] != '\033' || response[1] != '[') return false;
-        
-        size_t semicolon = response.find(';');
-        size_t r_pos = response.find('R');
-        if (semicolon == std::string::npos || r_pos == std::string::npos) return false;
-        
-        try {
-            _row = std::stoi(response.substr(2, semicolon - 2));
-            _col = std::stoi(response.substr(semicolon + 1, r_pos - semicolon - 1));
-            return true;
-        } catch (...) {
+        // 恢复终端设置
+        tcsetattr(STDIN_FILENO, TCSANOW, &old_term);
+        // 解析响应
+        if (sscanf(buf, "\033[%d;%d", &_row, &_col) != 2) {
             return false;
         }
+        return true;
     #endif
     }
 
