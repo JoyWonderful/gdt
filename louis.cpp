@@ -258,7 +258,7 @@ int main()
     p("大约在上三年级的时候，由于"); p("童心智造", {rich::color_rgb("#f65a14")}); p("的大幅宣传，我去"); p("体验", {STYL_BOLD, STYL_UNDERLINE}); p("了一下它们的体验课程。\n"); sleep(TS);
     c1 = p("（其实就是教我们 Scratch。）", {STYL_DIM}); sleep(TS*2); rich::rich_erase(c1); p("具体教什么忘了，总之就记得：开空调很冷；得益于编程猫我回答了“如果...那么”的问题，让老师很震惊；以及"); p("**班里面很多同学都来体验**", {STYL_BOLD, STYL_UNDERLINE}); printf("。\n"); sleep(TS);
     p("加之编程猫的体验在先，我觉得很有意思，于是就去真正地报名了。\n"); sleep(TS);
-    p("具体学的什么？"); rich::rich_modify("由于记忆久远，再加上其他编程语言的学习，我全忘光了", "好像也没学什么\n", {COLOR_BG_RED}); sleep(TS);
+    p("具体学的什么？"); rich::rich_modify("由于记忆久远，再加上其他编程语言的学习，我全忘光了", "好像也没学什么。\n", {COLOR_BG_RED}); sleep(TS);
     p("如果你不怕被我 "); p("Bug 百出的、抽象无比的", {COLOR_FG_MAGENTA}); p(" Scratch 项目震撼一整年:)，"); p("你可以去看看"); p(rich::hyper_link("https://xstxzz.scratch3.fun/users/userindex/5efd72384649dc1180d1cb59/", "我的 '象山童心智造 - 图形化编程社区' 的个人主页"), {COLOR_FG_BLUE}); p("。"); p("这算是我为我的 Scratcher 生涯留下的一座墓碑了。\n", {STYL_DEL});
     sleep(TST);
     p("按住 Ctrl 并单击即可访问链接。\n", {STYL_ITALIC, STYL_DIM}, 0);
@@ -351,7 +351,7 @@ int main()
     //# 2.6
     rich::title_set("2.6 Olympiad in Informatics");
     p("关于 `OI->C||C++` 又能说些什么呢？\n"); sleep(TS);
-    p("其实也没什么好说的。你也很熟悉相似的经历吧？\n");
+    p("其实也没什么好说的。你也很熟悉相似的经历吧？\n"); sleep(TS);
     p("Let's end this memory", {STYL_ITALIC, COLOR_BG_GREEN, STYL_BOLD}, 0); printf("\n");
     sleep(TST);
     waitfory;
@@ -360,7 +360,38 @@ int main()
     ///////////////////////////
     // 3RD STAGE: Friends... //
     ///////////////////////////
-    
+    rich::title_set("QSBmcmllbmQgaXMgc29tZW9uZSB3aG8geW91IGtub3cgd2VsbCBhbmQgbGlrZSwgYnV0IHdobyBpcyBub3QgcmVsYXRlZCB0byB5b3Uu");
+    p("> 班里面很多同学都来体验"); sleep(TS); rich::rich_modify("...", "但实际上没有多少人来接着上的。\n", {}, {STYL_BOLD}, 900); sleep(TS);
+    p("...", {}, 1000); p("我不知道该说些什么。\n");
+    waitfory;
+    rich::screen_clear();
+
+    ////////////////////////
+    // 4ND STAGE: Contact //
+    ////////////////////////
+    rich::title_set("联系我");
+    p("我的 GitHub: ", {}); p(rich::hyper_link("https://github.com/JoyWonderful"), {COLOR_FG_BLUE}); printf("\n");
+    p("我的邮箱: ", {}); p(rich::hyper_link("mailto:jywondf1844@outlook.com", "jywondf1844@outlook.com"), {COLOR_FG_BLUE}); printf("\n");
+    p(R"(      ╭─╮           ╭─╮                        ╭─╮                
+      │ │           │ │                        │ │                
+    ╭─┼─╯           │ │          ╭─────────────╯ ╰─────────────╮  
+    │ │   ╭─────────╯ ╰───────╮  ╰─────────────╮ ╭─────────────╯  
+  ╭─┼─╯   │ ╭───────╮ ╭───────╯                │ │                
+╭─╯ ╰─────┼─╯       │ │              ╭─────────╯ ╰─────────╮      
+╰─────╮ ╭─╯   ╭─────╯ ╰─────╮        │ ╭───────╮ ╭───────╮ │      
+    ╭─┼─╯     ╰─────────────╯        │ │       │ │       │ │      
+  ╭─┼─╯                              │ │       │ │       │ │      
+╭─╯ ╰───────╮ ╭─────────────╮        │ ╰───────╯ ╰───────╯ │      
+╰─╮ ╭───────╯ │ ╭─────────╮ │        │ ╭─────╮     ╭─────╮ │      
+  ╰─╯         │ │         │ │        ╰─╯   ╭─┼─╮ ╭─┼─╮   ╰─╯      
+      ╭─────╮ │ │         │ │            ╭─┼─╯ │ │ ╰─┼─╮          
+╭─────┼─────╯ │ │         │ │        ╭───┼─╯   │ │   ╰─┼───╮      
+╰─╮ ╭─╯       │ ╰─────────╯ │    ╭───┼───╯     │ │     ╰───┼───╮  
+  ╰─╯         │ ╭─────────╮ │    ╰───╯         │ │         ╰───╯  
+              ╰─╯         ╰─╯                  ╰─╯                )", {COLOR_FG_GREEN}, 3);
+    sleep(TST*2);
+    rich::cursor_up_with_goto_start(1);
+    waitfory;
 
     printf("\n");
     rich::screen_clear();
