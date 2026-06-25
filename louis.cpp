@@ -25,13 +25,14 @@
  */
 #define p rich::rich_print
 #define waitfory rich::rich_input("输入 Y 并按 Enter 继续。", {rich::color_rgb("#737373"), STYL_ITALIC, STYL_BLINK})
+#define c(_content, _hex_rgb) rich::rich_print(_content, {rich::color_rgb(_hex_rgb)}, 32) // code
 
 const unsigned int T = 120; // 说话每个字的间隔时间
 const unsigned int TC = 10; // 擦除时间，Clear
 const unsigned int TS = 256; // 每句话之间的间隔时间，Sentence
 const unsigned int TST = 900; // 场景间隔时间，STage。你可能更想把它 *2 用
 
-int r1 = 0,c1 = 0;
+int c1 = 0;
 
 //! 输出时列数控制在 99 以内，行数控制在 19 以内。
 int main()
@@ -270,7 +271,55 @@ int main()
     waitfory;
     rich::screen_clear();
 
-    rich::title_set("");
+    rich::title_set("The chaos of batch & vbscript");
+    p("四到五年级的时候，我大姐的好闺蜜不知从哪儿拿来一本"); p(rich::hyper_link("https://baike.baidu.com/item/%E9%BB%91%E5%AE%A2%E6%94%BB%E9%98%B2%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%EF%BC%9A%E5%85%A8%E6%96%B0%E7%B2%BE%E5%8D%8E%E7%89%88/61172689","《黑客攻防 从入门到精通》"), {rich::color_rgb("#ffcc00"), STYL_ITALIC}); c1 = p("北京希望电子出版社", {STYL_DIM,STYL_ITALIC}); sleep(TS*2); rich::rich_erase(c1); p("的书。"); p("反正就是把它给了大姐，然后大姐有把它给了我看。\n"); sleep(TS);
+    p("重要的是，我"); rich::rich_modify("学", "接触"); p("到了 Batch & VBScript。编写了我**人生中**第一个真正意义上的 "); p("script", {STYL_BOLD, STYL_UNDERLINE}); p("。\n"); sleep(TS);
+    p("下面我给你看看人生中第一个程序/(脚本?)长啥样吧。"); c1=p("这还是现在的我的优化版本", {STYL_DEL, STYL_DIM}, 30); sleep(TS*2); rich::rich_erase(c1);
+    printf("\n");
+    sleep(TST);
+    p("按住 Ctrl 并单击即可访问链接。\n", {STYL_ITALIC, STYL_DIM}, 0);
+    waitfory;
+    rich::screen_clear();
+    p("test.vbs\n```vbs\n", {STYL_DIM});
+    sleep(TST);
+    //BEGIN code
+    rich::screen_clear();
+    c("on error resume next\n",CODE_KEYWD);
+    c("dim ",CODE_KEYWD); c("WSHshell\n",CODE_VAR);
+    c("set ",CODE_KEYWD); c("WSHshell",CODE_VAR); c(" = ",CODE_DFT); c("createObject",CODE_FUNC); c("(",CODE_BRKT1); c("\"wscript.shell\"",CODE_STR); c(")\n",CODE_BRKT1);
+    c("WSHshell",CODE_VAR); c(".",CODE_DFT); c("run",CODE_FUNC); c("(",CODE_BRKT1); c("\"cmd.exe /c shutdown /s /t 60 /c 快说“我很傻”，不然一分钟内关你机，不信，你试试...\"",CODE_STR); c(")\n",CODE_BRKT1);
+    c("dim ",CODE_KEYWD); c("a\n",CODE_VAR);
+    c("do while",CODE_FLOWCTRL); c("(",CODE_BRKT1); c("a",CODE_VAR); c(" <> ",CODE_DFT); c("\"我很傻\"",CODE_STR); c(")\n",CODE_BRKT1);
+    c("a",CODE_VAR); c(" = ",CODE_DFT); c("inputBox",CODE_FUNC); c("(",CODE_BRKT1); c("\"说“我很傻”\"",CODE_STR); c(", ",CODE_DFT); c("\"说不说\"",CODE_STR); c(", ",CODE_DFT); c("\"不说\"",CODE_STR); c(", ",CODE_DFT); c("8000",CODE_NUM); c(", ",CODE_DFT); c("7000",CODE_NUM); c(")\n",CODE_BRKT1);
+    c("msgBox",CODE_FUNC); c("(",CODE_BRKT1); c("a",CODE_VAR); c(")\n",CODE_BRKT2);
+    c("loop\n",CODE_FLOWCTRL);
+    c("WSHshell",CODE_VAR); c(".",CODE_DFT); c("run",CODE_FUNC); c("(",CODE_BRKT1); c("\"cmd.exe /c shutdown /a\"",CODE_STR); c(")\n",CODE_BRKT1);
+    c("msgBox",CODE_FUNC); c("(",CODE_BRKT1); c("\"哈哈，真过瘾\"",CODE_STR); c(")\n",CODE_BRKT2);
+    //END code
+    p("```", {STYL_DIM});
+    sleep(TST);
+    rich::rich_erase(0, 0);
+    printf("\n");
+    waitfory;
+    rich::cursor_up_with_goto_start(1);
+    printf("\033[0J"); fflush(stdout);
+    p("这脚本是个非常简单经典的恶搞程序。但在当时的我看来就是"); p("一个"); rich::rich_modify("拥有 Super Cow Powers", "非常神奇", {COLOR_FG_MAGENTA}, {STYL_BOLD}); p("的代码了。它竟然能让电脑自动关机？！\n"); sleep(TS);
+    p("我和两个姐姐至少花了"); p("一小时", {COLOR_FG_YELLOW}); p("才把这段脚本从书上抄下来并**成功**运行。\n");  c1=p("现在我用了不到五分钟就把它写下来了。"); sleep(TS*2); rich::rich_erase(c1); sleep(TS);
+    p("如果你在运行 Windows 10 也许你可以把它复制下来，用 "); p("ANSI(GB2312) 编码", {STYL_UNDERLINE, COLOR_FG_YELLOW}); p("保存为 "); p("test.vbs", {STYL_UNDERLINE}); p(" 运行"); rich::rich_modify("逝世？", "试试？\n", {STYL_DEL});
+    sleep(TST*2);
+    waitfory;
+    rich::cursor_up_with_goto_start(1);
+    printf("\033[0J"); fflush(stdout);
+    p("这书名确实很搞笑，现在看来内容也很糟糕。但对那时的我来说，是具有"); p("'划时代意义'", {STYL_BOLD, STYL_UNDERLINE}); p("的。\n"); sleep(TS);
+    p("当时看了几页，我就"); p("**着了魔**", {STYL_BOLD, STYL_UNDERLINE}); p("。感觉自己家里的电脑全部"); p("都是漏洞", {COLOR_FG_RED}); p("，感觉这本书里面的东西都"); p("好高级", {COLOR_BG_MAGENTA}); p("。\n"); sleep(TS);
+    p("我马上要求妈妈给我买一本。我也成为姐姐眼中的 '对"); rich::rich_modify("黑客攻防技术", "????", {}, {COLOR_FG_BLUE}, 30); p("感兴趣的"); p("发烧友' 了。\n"); sleep(TS);
+    p("正因为如此，我还学到了："); p("Windows/CMD 命令、虚拟机的使用、注册表", {STYL_BOLD, STYL_UNDERLINE}); p("...etc\n"); sleep(TS);
+    p("我对批处理的了解催生了在 2024 CSP 中使用的"); p(rich::hyper_link("https://www.luogu.com.cn/discuss/967804","对拍批处理"), {COLOR_FG_BLUE}); p("。我也在考场上使用了，在小木棍的找规律中帮了我大忙。\n");
+    sleep(TST*2);
+    p("Go for Python.\n", {STYL_ITALIC, COLOR_FG_GREEN, STYL_BOLD}, 0);
+    sleep(TST);
+    waitfory;
+    rich::screen_clear();
 
     printf("\n");
     rich::screen_clear();
