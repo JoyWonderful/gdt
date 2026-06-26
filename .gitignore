@@ -1,6 +1,2 @@
-*
-
-!*.vbs
-!*.cpp
-!*.hpp
-!.gitignore
+*.exe
+*.unix
